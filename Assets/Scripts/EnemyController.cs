@@ -6,13 +6,15 @@ public enum SoulColors { Red, Blue }
 
 public class EnemyController : MonoBehaviour
 {
+    #region Variables
+
     public float life;
     public float speed;
     public int physicalDamage;
     public SoulColors soulColor;
 
     private float timeBeforeDisappear = 2.0f;
-    
+
     private bool canMove = true;
     private bool canAttack = true;
 
@@ -21,6 +23,8 @@ public class EnemyController : MonoBehaviour
     private GameManager gameManager;
     private SpawnManager spawnManager;
     private Animator enemyAnim;
+
+    #endregion
 
     void Start()
     {
@@ -39,18 +43,14 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    #region Actions
+
     // The movement of the enemy
     void MoveEnemy()
     {
         Vector3 direction = (target.position - transform.position).normalized;
         enemyRb.velocity = direction * speed * Time.deltaTime;
         transform.LookAt(target);
-    }
-
-    // Check if the enemy is attacking
-    public bool IsAttacking()
-    {
-        return enemyAnim.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
     // Attacks
@@ -61,6 +61,35 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(gameManager.CombatCooldownTime);
         canAttack = true;
     }
+
+    // Plays the enemy's death animation and destroy the enemy after a few seconds
+    IEnumerator Death()
+    {
+        enemyAnim.SetBool("Dead_b", true);
+        yield return new WaitForSeconds(timeBeforeDisappear);
+        spawnManager.SpawnEnemySoul(gameObject);
+        Destroy(gameObject);
+    }
+
+    #endregion
+
+    #region Methods for verify enemy status
+
+    // Return true if the enemy is dead or false otherwise
+    bool IsDead()
+    {
+        return life <= 0;
+    }
+
+    // Check if the enemy is attacking
+    public bool IsAttacking()
+    {
+        return enemyAnim.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
+    }
+
+    #endregion
+
+    #region Get methods
 
     // Subtracts life from the enemy
     void GetHitFromPlayerWeapon(GameObject weapon)
@@ -79,20 +108,9 @@ public class EnemyController : MonoBehaviour
         return GetComponentInChildren<Animator>();
     }
 
-    // Plays the enemy's death animation and destroy the enemy after a few seconds
-    IEnumerator Death()
-    {
-        enemyAnim.SetBool("Dead_b", true);
-        yield return new WaitForSeconds(timeBeforeDisappear);
-        spawnManager.SpawnEnemySoul(gameObject);
-        Destroy(gameObject);
-    }
+    #endregion
 
-    // Return true if the enemy is dead or false otherwise
-    bool IsDead()
-    {
-        return life <= 0;
-    }
+    #region Collision and trigger
 
     // As long as the enemy is colliding with the player, it will continue attacking the player
     void OnCollisionStay(Collision collision)
@@ -119,4 +137,6 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

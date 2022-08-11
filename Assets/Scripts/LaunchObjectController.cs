@@ -4,23 +4,31 @@ public enum LaunchObjectMovementType { Up, Right, Down, Left }
 
 public class LaunchObjectController : MonoBehaviour
 {
-    private float speed = 15;
+    private float movementSpeed = 15;
+    private float maxTorque = 10.0f;
+    
     public int physicalDamage;
 
     private EnvironmentBoundaries environmentBoundaries;
+    private Rigidbody rb;
+
     public LaunchObjectMovementType movementType;
 
-    // Start is called before the first frame update
     void Start()
     {
         environmentBoundaries = GameObject.Find("Environment").GetComponent<EnvironmentBoundaries>();
+        rb = GetComponent<Rigidbody>();
+
+        rb.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse);
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         Move();
+    }
 
+    private void Update()
+    {
         if (IsOutsideBoundaries())
         {
             Destroy(gameObject);
@@ -28,24 +36,30 @@ public class LaunchObjectController : MonoBehaviour
     }
 
     // Moves the launch object
-    private void Move()
+    void Move()
     {
         if (movementType == LaunchObjectMovementType.Right)
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.right, Space.World);
+            transform.Translate(movementSpeed * Time.deltaTime * Vector3.right, Space.World);
         }
         else if (movementType == LaunchObjectMovementType.Down)
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.back, Space.World);
+            transform.Translate(movementSpeed * Time.deltaTime * Vector3.back, Space.World);
         }
         else if (movementType == LaunchObjectMovementType.Left)
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.left, Space.World);
+            transform.Translate(movementSpeed * Time.deltaTime * Vector3.left, Space.World);
         }
         else
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.forward, Space.World);
+            transform.Translate(movementSpeed * Time.deltaTime * Vector3.forward, Space.World);
         }
+    }
+
+    // Returns a random torque between two stablished values
+    float RandomTorque()
+    {
+        return Random.Range(-maxTorque, maxTorque);
     }
 
     // Checks if the launch object is outside of the boundaries

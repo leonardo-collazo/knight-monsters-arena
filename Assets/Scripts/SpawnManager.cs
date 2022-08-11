@@ -27,9 +27,9 @@ public class SpawnManager : MonoBehaviour
     // Starts spawning enemies, powerups and launch objects in random places
     public void StartAllSpawns()
     {
-        //InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
-        //InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
-        InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
+        // InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
+        // InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
+        // InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
     }
 
     // Spawns an enemy in a random place near the limits
@@ -132,8 +132,6 @@ public class SpawnManager : MonoBehaviour
     {
         // Generates a randomly place
         int enumPosition = Random.Range(0, 4);
-
-        // int enumPosition = 2;
         Vector3 position = new Vector3(0, playerTransform.transform.localScale.y / 2, 0);
 
         // Depending on the place, a position is generated
