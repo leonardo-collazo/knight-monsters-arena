@@ -12,7 +12,6 @@ public class EnemyController : MonoBehaviour
     public SoulColors soulColor;
 
     private float timeBeforeDisappear = 2.0f;
-    private float nextAttackCooldown = 2.0f;
     
     private bool canMove = true;
     private bool canAttack = true;
@@ -59,7 +58,7 @@ public class EnemyController : MonoBehaviour
     {
         enemyAnim.SetTrigger("Attack_t");
         canAttack = false;
-        yield return new WaitForSeconds(nextAttackCooldown);
+        yield return new WaitForSeconds(gameManager.CombatCooldownTime);
         canAttack = true;
     }
 

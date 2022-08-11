@@ -1,5 +1,6 @@
 using UnityEngine;
 
+public enum SpawnPosition { North, South, West, East }
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] enemies;
@@ -7,21 +8,18 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] launchObjects;
     [SerializeField] private GameObject[] effects;
 
-    [SerializeField] private float spawnLeftLimit = -14.0f;
-    [SerializeField] private float spawnUpperLimit = 7.7f;
-    [SerializeField] private float spawnRightLimit = 14.0f;
-    [SerializeField] private float spawnLowerLimit = -7.7f;
-
-    [SerializeField] private float enemySpawnTime = 5.0f;
-    [SerializeField] private float powerupSpawnTime = 10.0f;
-    [SerializeField] private float launchObjectSpawnTime = 7.0f;
-    [SerializeField] private float spawnStartDelay = 1.0f;
+    [SerializeField] private float enemySpawnTime;
+    [SerializeField] private float powerupSpawnTime;
+    [SerializeField] private float launchObjectSpawnTime;
+    [SerializeField] private float spawnStartDelay;
 
     private Transform playerTransform;
+    private EnvironmentBoundaries environmentBoundaries;
 
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        environmentBoundaries = GameObject.Find("Environment").GetComponent<EnvironmentBoundaries>();
     }
 
     #region Spawning methods
@@ -29,8 +27,8 @@ public class SpawnManager : MonoBehaviour
     // Starts spawning enemies, powerups and launch objects in random places
     public void StartAllSpawns()
     {
-        InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
-        InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
+        //InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
+        //InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
         InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
     }
 
@@ -55,10 +53,13 @@ public class SpawnManager : MonoBehaviour
     // Spawns a launch object in a random place near the limits
     void SpawnLaunchObject()
     {
-        int launchObjectsIndex = Random.Range(0, launchObjects.Length);
-        Vector3 position = GenerateSpawningLaunchObjectPosition(launchObjects[launchObjectsIndex]);
+        int launchObjectIndex = Random.Range(0, launchObjects.Length);
 
-        Instantiate(launchObjects[launchObjectsIndex], position, launchObjects[launchObjectsIndex].transform.rotation);
+        GameObject launchObject = launchObjects[launchObjectIndex];
+        Vector3 position = GenerateSpawningLaunchObjectPosition();
+
+        SetLaunchObjectMovement(launchObject.GetComponent<LaunchObjectController>(), position);
+        Instantiate(launchObject, position, launchObject.transform.rotation);
     }
 
     // Spawns the corresponding soul of the enemy in the same position as the enemy
@@ -96,23 +97,23 @@ public class SpawnManager : MonoBehaviour
         // Depending on the place, a position is generated
         if ((EnemySpawningPlaces)fromWhere == EnemySpawningPlaces.fromLeft)
         {
-            position.x = spawnLeftLimit;
-            position.z = Random.Range(spawnLowerLimit, spawnUpperLimit);
+            position.x = environmentBoundaries.leftWallPos.position.x;
+            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
         }
         else if ((EnemySpawningPlaces)fromWhere == EnemySpawningPlaces.fromAbove)
         {
-            position.x = Random.Range(spawnLeftLimit, spawnRightLimit);
-            position.z = spawnUpperLimit;
+            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
+            position.z = environmentBoundaries.forwardWallPos.position.z;
         }
         else if ((EnemySpawningPlaces)fromWhere == EnemySpawningPlaces.fromRight)
         {
-            position.x = spawnRightLimit;
-            position.z = Random.Range(spawnLowerLimit, spawnUpperLimit);
+            position.x = environmentBoundaries.rightWallPos.position.x;
+            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
         }
         else
         {
-            position.x = Random.Range(spawnLeftLimit, spawnRightLimit);
-            position.z = spawnLowerLimit;
+            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
+            position.z = environmentBoundaries.behindWallPos.position.z;
         }
 
         return position;
@@ -120,46 +121,66 @@ public class SpawnManager : MonoBehaviour
 
     Vector3 GenerateSpawningPowerupPosition(GameObject powerup)
     {
-        float xPosition = Random.Range(spawnLeftLimit, spawnRightLimit);
-        float zPosition = Random.Range(spawnLowerLimit, spawnUpperLimit);
+        float xPosition = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
+        float zPosition = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
         Vector3 position = new Vector3(xPosition, powerup.transform.localScale.y / 2, zPosition);
 
         return position;
     }
 
-    Vector3 GenerateSpawningLaunchObjectPosition(GameObject launchObject)
+    Vector3 GenerateSpawningLaunchObjectPosition()
     {
         // Generates a randomly place
-        int toWhere = Random.Range(0, 4);
+        int enumPosition = Random.Range(0, 4);
+
+        // int enumPosition = 2;
         Vector3 position = new Vector3(0, playerTransform.transform.localScale.y / 2, 0);
 
         // Depending on the place, a position is generated
-        if ((LaunchObjectMovementType)toWhere == LaunchObjectMovementType.Right)
+        if ((SpawnPosition)enumPosition == SpawnPosition.West)
         {
-            position.x = spawnLeftLimit;
-            position.z = Random.Range(spawnLowerLimit, spawnUpperLimit);
-            launchObject.GetComponent<LaunchObjectController>().typeMovement = LaunchObjectMovementType.Right;
+            position.x = environmentBoundaries.leftWallPos.position.x;
+            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
         }
-        else if ((LaunchObjectMovementType)toWhere == LaunchObjectMovementType.Down)
+
+        else if ((SpawnPosition)enumPosition == SpawnPosition.North)
         {
-            position.x = Random.Range(spawnLeftLimit, spawnRightLimit);
-            position.z = spawnUpperLimit;
-            launchObject.GetComponent<LaunchObjectController>().typeMovement = LaunchObjectMovementType.Down;
+            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
+            position.z = environmentBoundaries.forwardWallPos.position.z;
         }
-        else if ((LaunchObjectMovementType)toWhere == LaunchObjectMovementType.Left)
+        else if ((SpawnPosition)enumPosition == SpawnPosition.East)
         {
-            position.x = spawnRightLimit;
-            position.z = Random.Range(spawnLowerLimit, spawnUpperLimit);
-            launchObject.GetComponent<LaunchObjectController>().typeMovement = LaunchObjectMovementType.Left;
+            position.x = environmentBoundaries.rightWallPos.position.x;
+            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
         }
         else
         {
-            position.x = Random.Range(spawnLeftLimit, spawnRightLimit);
-            position.z = spawnLowerLimit;
-            launchObject.GetComponent<LaunchObjectController>().typeMovement = LaunchObjectMovementType.Up;
-        }
+            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
+            position.z = environmentBoundaries.behindWallPos.position.z;
+        }        
 
         return position;
+    }
+
+    // Sets the movement type of the launchobject in dependence of the given position
+    void SetLaunchObjectMovement(LaunchObjectController launchObjectController, Vector3 position)
+    {
+        if (position.x == environmentBoundaries.leftWallPos.position.x)
+        {
+            launchObjectController.movementType = LaunchObjectMovementType.Right;
+        }
+        else if (position.x == environmentBoundaries.rightWallPos.position.x)
+        {
+            launchObjectController.movementType = LaunchObjectMovementType.Left;
+        }
+        else if (position.z == environmentBoundaries.forwardWallPos.position.z)
+        {
+            launchObjectController.movementType = LaunchObjectMovementType.Down;
+        }
+        else
+        {
+            launchObjectController.movementType = LaunchObjectMovementType.Up;
+        }
     }
 
     #endregion

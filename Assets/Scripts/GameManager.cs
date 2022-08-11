@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public float CombatCooldownTime { get; } = 2.5f;
+
     public bool isGameActive;
 
     private PlayerController playerController;
@@ -20,7 +22,7 @@ public class GameManager : MonoBehaviour
     {
         playerController.life = playerController.maxLife;
         isGameActive = true;
-        // spawnManager.StartAllSpawns();  *********** DESCOMENTAR ************
+        spawnManager.StartAllSpawns();
     }
 
     // Restarts the game

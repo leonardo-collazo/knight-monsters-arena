@@ -9,13 +9,10 @@ public class PlayerController : MonoBehaviour
     #region Variables
 
     [SerializeField] private float movementSpeed = 200.0f;
-    [SerializeField] private float rotationSpeed = 400.0f;
-    [SerializeField] private float fasterRotationSpeed = 600.0f;
     [SerializeField] private float walkingAnimSpeedValue = 0.4f;
     [SerializeField] private float runningAnimSpeedValue = 1.0f;
     [SerializeField] private float idleAnimSpeedValue = 0f;
-    [SerializeField] private float immunityTimeBeforeHit = 0.2f;
-    [SerializeField] private float immunityTimeAfterHit = 2.0f;
+    [SerializeField] private float immunityTimeBeforeHit = 0.3f;
     [SerializeField] private float turnSmoothTime = 0.1f;
     [SerializeField] private float turnSmoothVelocity;
 
@@ -269,7 +266,7 @@ public class PlayerController : MonoBehaviour
         {
             GetHitFromEnemy(collision.gameObject);
             gameManager.GameOver();
-            StartCoroutine(gameManager.ImmunizePlayer(immunityTimeAfterHit));
+            StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
         }
     }
 
@@ -280,7 +277,7 @@ public class PlayerController : MonoBehaviour
             GetHitFromLaunchObject(other.gameObject);
             Destroy(other.gameObject);
             gameManager.GameOver();
-            StartCoroutine(gameManager.ImmunizePlayer(immunityTimeAfterHit));
+            StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
         }
     }
 

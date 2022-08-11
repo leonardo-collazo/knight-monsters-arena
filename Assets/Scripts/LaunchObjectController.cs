@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public enum LaunchObjectMovementType { None, Up, Right, Down, Left }
+public enum LaunchObjectMovementType { Up, Right, Down, Left }
 
 public class LaunchObjectController : MonoBehaviour
 {
-    private float speed = 10;
+    private float speed = 15;
     public int physicalDamage;
 
     private EnvironmentBoundaries environmentBoundaries;
-    public LaunchObjectMovementType typeMovement = LaunchObjectMovementType.None;
+    public LaunchObjectMovementType movementType;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +17,7 @@ public class LaunchObjectController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Move();
 
@@ -30,15 +30,15 @@ public class LaunchObjectController : MonoBehaviour
     // Moves the launch object
     private void Move()
     {
-        if (typeMovement == LaunchObjectMovementType.Right)
+        if (movementType == LaunchObjectMovementType.Right)
         {
             transform.Translate(speed * Time.deltaTime * Vector3.right, Space.World);
         }
-        else if (typeMovement == LaunchObjectMovementType.Down)
+        else if (movementType == LaunchObjectMovementType.Down)
         {
             transform.Translate(speed * Time.deltaTime * Vector3.back, Space.World);
         }
-        else if (typeMovement == LaunchObjectMovementType.Left)
+        else if (movementType == LaunchObjectMovementType.Left)
         {
             transform.Translate(speed * Time.deltaTime * Vector3.left, Space.World);
         }
@@ -51,7 +51,9 @@ public class LaunchObjectController : MonoBehaviour
     // Checks if the launch object is outside of the boundaries
     bool IsOutsideBoundaries()
     {
-        return transform.position.x < environmentBoundaries.leftBoundary || transform.position.x > environmentBoundaries.rightBoundary
-           || transform.position.z < environmentBoundaries.lowerBoundary || transform.position.z > environmentBoundaries.upperBoundary;
+        return transform.position.x < environmentBoundaries.leftWallPos.position.x || 
+            transform.position.x > environmentBoundaries.rightWallPos.position.x || 
+            transform.position.z < environmentBoundaries.behindWallPos.position.z || 
+            transform.position.z > environmentBoundaries.forwardWallPos.position.z;
     }
 }

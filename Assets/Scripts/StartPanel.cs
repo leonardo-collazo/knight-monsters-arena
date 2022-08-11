@@ -8,4 +8,9 @@ public class StartPanel : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
