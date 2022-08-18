@@ -5,9 +5,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public float CombatCooldownTime { get; } = 2.5f;
-
     public bool isGameActive;
 
+    [SerializeField] private ThirdPersonCameraController thirdPersonCamera;
     private PlayerController playerController;
     private SpawnManager spawnManager;
 
@@ -23,15 +23,14 @@ public class GameManager : MonoBehaviour
         playerController.life = playerController.maxLife;
         isGameActive = true;
         spawnManager.StartAllSpawns();
+        thirdPersonCamera.EnableThirdPersonCamera();
     }
 
     // Restarts the game
     public void RestartGame()
     {
         playerController.GetPlayerAnimator().SetBool("Dead_b", false);
-        playerController.life = playerController.maxLife;
-        isGameActive = true;
-        spawnManager.StartAllSpawns();
+        StartGame();
     }
 
     // Checks if it's game over and if so, the game ends

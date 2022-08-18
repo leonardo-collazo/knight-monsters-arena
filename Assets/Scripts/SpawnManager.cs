@@ -7,6 +7,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] powerups;
     [SerializeField] private GameObject[] launchObjects;
     [SerializeField] private GameObject[] effects;
+    [SerializeField] private Transform[] enemySpawnPositions;
 
     [SerializeField] private float enemySpawnTime;
     [SerializeField] private float powerupSpawnTime;
@@ -36,7 +37,11 @@ public class SpawnManager : MonoBehaviour
     void SpawnEnemy()
     {
         int enemyIndex = Random.Range(0, enemies.Length);
-        Vector3 position = GenerateSpawningEnemyPosition(enemies[enemyIndex].gameObject);
+        int enemySpawnPosIndex = Random.Range(0, enemySpawnPositions.Length);
+
+        Vector3 position = enemySpawnPositions[enemySpawnPosIndex].position;
+
+        // Vector3 position = GenerateSpawningEnemyPosition(enemies[enemyIndex].gameObject);
 
         Instantiate(enemies[enemyIndex], position, enemies[enemyIndex].transform.rotation);
     }
@@ -87,37 +92,6 @@ public class SpawnManager : MonoBehaviour
     #endregion
 
     #region Generating position methods
-
-    Vector3 GenerateSpawningEnemyPosition(GameObject enemy)
-    {
-        // A vector is created with several places and generate one randomly
-        int fromWhere = Random.Range(0, 4);
-        Vector3 position = new Vector3(0, enemy.transform.localScale.y / 2, 0);
-
-        // Depending on the place, a position is generated
-        if ((EnemySpawningPlaces)fromWhere == EnemySpawningPlaces.fromLeft)
-        {
-            position.x = environmentBoundaries.leftWallPos.position.x;
-            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
-        }
-        else if ((EnemySpawningPlaces)fromWhere == EnemySpawningPlaces.fromAbove)
-        {
-            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
-            position.z = environmentBoundaries.forwardWallPos.position.z;
-        }
-        else if ((EnemySpawningPlaces)fromWhere == EnemySpawningPlaces.fromRight)
-        {
-            position.x = environmentBoundaries.rightWallPos.position.x;
-            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
-        }
-        else
-        {
-            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
-            position.z = environmentBoundaries.behindWallPos.position.z;
-        }
-
-        return position;
-    }
 
     Vector3 GenerateSpawningPowerupPosition(GameObject powerup)
     {

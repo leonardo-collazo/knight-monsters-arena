@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   life: 10
-  speed: 150
+  speed: 250
   physicalDamage: 5
   soulColor: 1
 --- !u!65 &1409069818
