@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     {
         playerController.life = playerController.maxLife;
         isGameActive = true;
-        spawnManager.StartAllSpawns();
         thirdPersonCamera.EnableThirdPersonCamera();
     }
 
@@ -36,12 +35,9 @@ public class GameManager : MonoBehaviour
     // Checks if it's game over and if so, the game ends
     public void GameOver()
     {
-        if (playerController.life == 0)
-        {
-            isGameActive = false;
-            playerController.GetPlayerAnimator().SetBool("Dead_b", true);
-            spawnManager.CancelInvoke();
-        }
+        isGameActive = false;
+        playerController.GetPlayerAnimator().SetBool("Dead_b", true);
+        spawnManager.CancelInvoke();
     }
 
     // Makes the player immune to hits

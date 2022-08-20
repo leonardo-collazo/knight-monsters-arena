@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum SpawnPosition { North, South, West, East }
+public enum LaunchObjectSpawnPosition { North, South, West, East }
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] enemies;
@@ -13,6 +13,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float powerupSpawnTime;
     [SerializeField] private float launchObjectSpawnTime;
     [SerializeField] private float spawnStartDelay;
+
+    [SerializeField] int amountLaunchObjectToSpawn;
 
     private Transform playerTransform;
     private EnvironmentBoundaries environmentBoundaries;
@@ -28,6 +30,7 @@ public class SpawnManager : MonoBehaviour
     // Starts spawning enemies, powerups and launch objects in random places
     public void StartAllSpawns()
     {
+        // Descomentar todo
         // InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
         // InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
         // InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
@@ -58,13 +61,16 @@ public class SpawnManager : MonoBehaviour
     // Spawns a launch object in a random place near the limits
     void SpawnLaunchObject()
     {
-        int launchObjectIndex = Random.Range(0, launchObjects.Length);
+        for (int amountLaunchObjectSpawned = 0; amountLaunchObjectSpawned < amountLaunchObjectToSpawn; amountLaunchObjectSpawned++)
+        {
+            int launchObjectIndex = Random.Range(0, launchObjects.Length);
 
-        GameObject launchObject = launchObjects[launchObjectIndex];
-        Vector3 position = GenerateSpawningLaunchObjectPosition();
+            GameObject launchObject = launchObjects[launchObjectIndex];
+            Vector3 position = GenerateSpawningLaunchObjectPosition();
 
-        SetLaunchObjectMovement(launchObject.GetComponent<LaunchObjectController>(), position);
-        Instantiate(launchObject, position, launchObject.transform.rotation);
+            SetLaunchObjectMovement(launchObject.GetComponent<LaunchObjectController>(), position);
+            Instantiate(launchObject, position, launchObject.transform.rotation);
+        }
     }
 
     // Spawns the corresponding soul of the enemy in the same position as the enemy
@@ -97,6 +103,7 @@ public class SpawnManager : MonoBehaviour
     {
         float xPosition = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
         float zPosition = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
+        
         Vector3 position = new Vector3(xPosition, powerup.transform.localScale.y / 2, zPosition);
 
         return position;
@@ -106,21 +113,21 @@ public class SpawnManager : MonoBehaviour
     {
         // Generates a randomly place
         int enumPosition = Random.Range(0, 4);
-        Vector3 position = new Vector3(0, playerTransform.transform.localScale.y / 2, 0);
+        Vector3 position = new Vector3(0, playerTransform.transform.localScale.y, 0);
 
         // Depending on the place, a position is generated
-        if ((SpawnPosition)enumPosition == SpawnPosition.West)
+        if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.West)
         {
             position.x = environmentBoundaries.leftWallPos.position.x;
             position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
         }
 
-        else if ((SpawnPosition)enumPosition == SpawnPosition.North)
+        else if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.North)
         {
             position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
             position.z = environmentBoundaries.forwardWallPos.position.z;
         }
-        else if ((SpawnPosition)enumPosition == SpawnPosition.East)
+        else if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.East)
         {
             position.x = environmentBoundaries.rightWallPos.position.x;
             position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);

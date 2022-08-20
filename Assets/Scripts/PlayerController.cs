@@ -265,6 +265,12 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy") && !IsImmune && collision.gameObject.GetComponent<EnemyController>().IsAttacking())
         {
             GetHitFromEnemy(collision.gameObject);
+
+            if (life <= 0)
+            {
+                gameManager.GameOver();
+            }
+            
             gameManager.GameOver();
             StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
         }
@@ -276,7 +282,12 @@ public class PlayerController : MonoBehaviour
         {
             GetHitFromLaunchObject(other.gameObject);
             Destroy(other.gameObject);
-            gameManager.GameOver();
+
+            if (life <= 0)
+            {
+                gameManager.GameOver();
+            }
+
             StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
         }
     }
