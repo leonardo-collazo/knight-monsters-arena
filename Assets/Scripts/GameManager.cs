@@ -5,9 +5,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public float CombatCooldownTime { get; } = 2.5f;
+    public float ReceiveDamageCooldownTime { get; } = 3.0f;
+    
     public bool isGameActive;
 
     [SerializeField] private ThirdPersonCameraController thirdPersonCamera;
+    
     private PlayerController playerController;
     private SpawnManager spawnManager;
 

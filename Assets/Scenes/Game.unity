@@ -1869,7 +1869,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 245732638}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46.617, y: 1, z: -5.82}
+  m_LocalPosition: {x: 46.617, y: 1.5, z: -5.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 829880932}
@@ -5276,7 +5276,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613827825}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33.167, y: 1, z: 25.681}
+  m_LocalPosition: {x: 33.167, y: 1.5, z: 25.681}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 829880932}
@@ -5711,7 +5711,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 639347354}
-  m_LocalRotation: {x: -0.01818946, y: 0.000000015017749, z: -0.000000008397879, w: 0.99983466}
+  m_LocalRotation: {x: -0.018189475, y: 0.000000015017749, z: -0.000000008397879, w: 0.99983466}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5833,7 +5833,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645665211}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.7, y: 1, z: -5.854}
+  m_LocalPosition: {x: 1.7, y: 1.5, z: -5.854}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 829880932}
@@ -8012,7 +8012,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945840711}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.703, y: 1, z: 25.681}
+  m_LocalPosition: {x: 15.703, y: 1.5, z: 25.681}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 829880932}
@@ -8738,6 +8738,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1207358875, guid: 146c150827a5c5c4cb79900217d145cc, type: 3}
+      propertyPath: m_Height
+      value: 1.6961477
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207358875, guid: 146c150827a5c5c4cb79900217d145cc, type: 3}
+      propertyPath: m_Radius
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207358875, guid: 146c150827a5c5c4cb79900217d145cc, type: 3}
+      propertyPath: m_Center.y
+      value: 0.3519262
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207358875, guid: 146c150827a5c5c4cb79900217d145cc, type: 3}
+      propertyPath: m_Center.z
+      value: 0.089999974
+      objectReference: {fileID: 0}
     - target: {fileID: 1728653994037527689, guid: 146c150827a5c5c4cb79900217d145cc, type: 3}
       propertyPath: m_Name
       value: Player
@@ -10057,9 +10073,9 @@ MonoBehaviour:
   - {fileID: 613827826}
   - {fileID: 1932538502}
   - {fileID: 245732639}
-  enemySpawnTime: 3
-  powerupSpawnTime: 15
-  launchObjectSpawnTime: 5
+  enemySpawnTime: 4
+  powerupSpawnTime: 12
+  launchObjectSpawnTime: 4
   spawnStartDelay: 1
   amountLaunchObjectToSpawn: 3
 --- !u!1001 &1278930032
@@ -10871,7 +10887,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1358615126}
-  m_LocalRotation: {x: -0.03632489, y: -0.0000000017902959, z: 9.590728e-10, w: 0.99934006}
+  m_LocalRotation: {x: -0.036324903, y: 0.00000003212555, z: -0.00000001720718, w: 0.99934006}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -12224,7 +12240,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1632835841}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.7, y: 1, z: 11.82}
+  m_LocalPosition: {x: 1.7, y: 1.5, z: 11.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 829880932}
@@ -14232,7 +14248,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1932538501}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46.53, y: 1, z: 11.7}
+  m_LocalPosition: {x: 46.53, y: 1.5, z: 11.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 829880932}
@@ -14844,6 +14860,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToRaiseEnemyGates: 3
+  timeToStartSpawningEnemies: 3
   enemyGates:
   - {fileID: 1800281520}
   - {fileID: 1056849032}

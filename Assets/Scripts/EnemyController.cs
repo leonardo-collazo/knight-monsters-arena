@@ -4,32 +4,40 @@ using UnityEngine;
 public enum EnemySpawningPlaces { fromLeft, fromRight, fromAbove, fromBelow }
 public enum SoulColors { Red, Blue }
 
+[RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class EnemyController : MonoBehaviour
 {
     #region Variables
 
-    public float life;
-    public float speed;
-    public int physicalDamage;
-    public SoulColors soulColor;
-
-    private float timeBeforeDisappear = 2.0f;
+    [SerializeField] private float life;
+    [SerializeField] private float speed;
+    [SerializeField] private float timeBeforeDisappear;
+    [SerializeField] private float timeBeforeAttacking;
+    [SerializeField] private int physicalDamage;
+    
+    [SerializeField] private SoulColors soulColor;
 
     private bool canMove = true;
     private bool canAttack = true;
 
     private Rigidbody enemyRb;
-    private Transform target;
+    private Collider enemyCollider;
+    private Transform targetToFollow;
     private GameManager gameManager;
     private SpawnManager spawnManager;
     private Animator enemyAnim;
+
+    public SoulColors SoulColor { get => soulColor; }
+    public int PhysicalDamage { get => physicalDamage; }
+    public float TimeBeforeAttacking { get => timeBeforeAttacking; }
 
     #endregion
 
     void Start()
     {
         enemyRb = GetComponent<Rigidbody>();
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        enemyCollider = GetComponent<Collider>();
+        targetToFollow = GameObject.FindGameObjectWithTag("Player").transform;
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
         enemyAnim = GetEnemyAnimator();
@@ -48,16 +56,17 @@ public class EnemyController : MonoBehaviour
     // The movement of the enemy
     void MoveEnemy()
     {
-        Vector3 direction = (target.position - transform.position).normalized;
+        Vector3 direction = (targetToFollow.position - transform.position).normalized;
         enemyRb.velocity = direction * speed * Time.deltaTime;
-        transform.LookAt(target);
+        transform.LookAt(targetToFollow);
     }
 
     // Attacks
     IEnumerator Attack()
     {
-        enemyAnim.SetTrigger("Attack_t");
         canAttack = false;
+        yield return new WaitForSeconds(TimeBeforeAttacking);
+        enemyAnim.SetTrigger("Attack_t");
         yield return new WaitForSeconds(gameManager.CombatCooldownTime);
         canAttack = true;
     }
@@ -66,6 +75,8 @@ public class EnemyController : MonoBehaviour
     IEnumerator Death()
     {
         enemyAnim.SetBool("Dead_b", true);
+        enemyRb.isKinematic = true;
+        enemyCollider.enabled = false;
         yield return new WaitForSeconds(timeBeforeDisappear);
         spawnManager.SpawnEnemySoul(gameObject);
         Destroy(gameObject);
@@ -125,7 +136,7 @@ public class EnemyController : MonoBehaviour
     }
 
     // If the enemy collides with a weapon and the owner of that weapon is attacking, the enemy will recive a hit
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Weapon"))
         {

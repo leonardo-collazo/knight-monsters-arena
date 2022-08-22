@@ -31,7 +31,7 @@ public class SpawnManager : MonoBehaviour
     public void StartAllSpawns()
     {
         // Descomentar todo
-        // InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
+        InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
         // InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
         // InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
     }
@@ -79,11 +79,11 @@ public class SpawnManager : MonoBehaviour
         float difference = 0.2f;
         Vector3 position = new Vector3(enemy.transform.position.x, enemy.transform.position.y - difference, enemy.transform.position.z);
 
-        if (enemy.GetComponent<EnemyController>().soulColor == SoulColors.Red)
+        if (enemy.GetComponent<EnemyController>().SoulColor == SoulColors.Red)
         {
             Instantiate(effects[0], position, effects[0].gameObject.transform.rotation);
         }
-        else if (enemy.GetComponent<EnemyController>().soulColor == SoulColors.Blue)
+        else if (enemy.GetComponent<EnemyController>().SoulColor == SoulColors.Blue)
         {
             Instantiate(effects[1], position, effects[1].gameObject.transform.rotation);
         }

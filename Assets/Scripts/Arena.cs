@@ -5,6 +5,7 @@ using UnityEngine;
 public class Arena : MonoBehaviour
 {
     [SerializeField] private float timeToRaiseEnemyGates;
+    [SerializeField] private float timeToStartSpawningEnemies;
 
     [SerializeField] private GameObject[] enemyGates;
     [SerializeField] private GameObject playerGate;
@@ -33,7 +34,7 @@ public class Arena : MonoBehaviour
 
         RaiseAllEnemyGates();
 
-        yield return new WaitForSeconds(timeToRaiseEnemyGates);
+        yield return new WaitForSeconds(timeToStartSpawningEnemies);
 
         spawnManager.StartAllSpawns();
     }

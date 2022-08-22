@@ -11,15 +11,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementSpeed = 200.0f;
     [SerializeField] private float walkingAnimSpeedValue = 0.4f;
     [SerializeField] private float runningAnimSpeedValue = 1.0f;
-    [SerializeField] private float idleAnimSpeedValue = 0f;
-    [SerializeField] private float immunityTimeBeforeHit = 0.3f;
     [SerializeField] private float turnSmoothTime = 0.1f;
-    [SerializeField] private float turnSmoothVelocity;
 
     private PlayerAttackType attackType;
 
     public int life = 100;
     public int maxLife = 100;
+
+    private float idleAnimSpeedValue = 0f;
+    private float turnSmoothVelocity;
 
     public bool IsImmune { get; set; }
     public bool IsDefending { get; private set; }
@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cam;
 
     #endregion
+
+    #region Unity methods
 
     private void Awake()
     {
@@ -85,6 +87,8 @@ public class PlayerController : MonoBehaviour
             StopMoving();
         }
     }
+
+    #endregion
 
     #region Methods for player movement
 
@@ -183,7 +187,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsDefending && !IsRecoveringFromDeath() && gameManager.isGameActive)
         {
-            life -= enemy.GetComponent<EnemyController>().physicalDamage;
+            life -= enemy.GetComponent<EnemyController>().PhysicalDamage;
 
             if (life > 0)
             {
@@ -256,7 +260,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy") && !IsImmune)
         {
-            StartCoroutine(gameManager.ImmunizePlayer(immunityTimeBeforeHit));
+            StartCoroutine(gameManager.ImmunizePlayer(collision.gameObject.GetComponent<EnemyController>().TimeBeforeAttacking));
         }
     }
 
@@ -270,8 +274,7 @@ public class PlayerController : MonoBehaviour
             {
                 gameManager.GameOver();
             }
-            
-            gameManager.GameOver();
+
             StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
         }
     }
@@ -288,7 +291,7 @@ public class PlayerController : MonoBehaviour
                 gameManager.GameOver();
             }
 
-            StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
+            StartCoroutine(gameManager.ImmunizePlayer(gameManager.ReceiveDamageCooldownTime));
         }
     }
 
