@@ -12,22 +12,35 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkingAnimSpeedValue = 0.4f;
     [SerializeField] private float runningAnimSpeedValue = 1.0f;
     [SerializeField] private float turnSmoothTime = 0.1f;
-
-    private PlayerAttackType attackType;
-
-    public int life = 100;
-    public int maxLife = 100;
+    [SerializeField] private float life = 100;
+    [SerializeField] private float maxLife = 100;
 
     private float idleAnimSpeedValue = 0f;
     private float turnSmoothVelocity;
 
     public bool IsImmune { get; set; }
     public bool IsDefending { get; private set; }
+    public float MaxLife { get => maxLife; }
 
     private Rigidbody playerRb;
     private Animator playerAnim;
     private GameManager gameManager;
+    
+    [SerializeField] private HUD hud;
     [SerializeField] private Transform cam;
+
+    private PlayerAttackType attackType;
+
+    public float Life
+    {
+        get { return life; }
+
+        set
+        {
+            value = Mathf.Clamp(value, 0f, maxLife);
+            life = value;
+        }
+    }
 
     #endregion
 
@@ -188,14 +201,11 @@ public class PlayerController : MonoBehaviour
         if (!IsDefending && !IsRecoveringFromDeath() && gameManager.isGameActive)
         {
             life -= enemy.GetComponent<EnemyController>().PhysicalDamage;
+            hud.UpdatePlayerHealthBarValue(life);
 
             if (life > 0)
             {
                 playerAnim.SetTrigger("GetHit_trig");
-            }
-            else
-            {
-                life = 0;
             }
         }
     }
@@ -210,10 +220,6 @@ public class PlayerController : MonoBehaviour
             if (life > 0)
             {
                 playerAnim.SetTrigger("GetHit_trig");
-            }
-            else
-            {
-                life = 0;
             }
         }
     }

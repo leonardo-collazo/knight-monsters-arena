@@ -74,10 +74,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.4389703
+  m_Radius: 0.8
+  m_Height: 1.6961477
   m_Direction: 1
-  m_Center: {x: 0, y: 0.23, z: 0.09}
+  m_Center: {x: 0, y: 0.3519262, z: 0.089999974}
 --- !u!114 &1728653994037527692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,18 +91,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 200
-  rotationSpeed: 400
-  fasterRotationSpeed: 600
   walkingAnimSpeedValue: 0.4
   runningAnimSpeedValue: 1
-  idleAnimSpeedValue: 0
-  immunityTimeBeforeHit: 0.2
-  immunityTimeAfterHit: 2
   turnSmoothTime: 0.1
-  turnSmoothVelocity: 0
   life: 100
   maxLife: 100
-  isImmune: 0
+  hud: {fileID: 0}
   cam: {fileID: 0}
 --- !u!64 &1632330511
 MeshCollider:

@@ -7,16 +7,16 @@ public class Arena : MonoBehaviour
     [SerializeField] private float timeToRaiseEnemyGates;
     [SerializeField] private float timeToStartSpawningEnemies;
 
-    [SerializeField] private GameObject[] enemyGates;
-    [SerializeField] private GameObject playerGate;
+    private GateController[] enemyGates;
+    private GateController playerGate;
 
     private SpawnManager spawnManager;
 
-    public GameObject PlayerGate => playerGate;
-
     private void Start()
     {
-        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        spawnManager = FindObjectOfType<SpawnManager>();
+        enemyGates = GameObject.Find("EnemyRooms").GetComponentsInChildren<GateController>();
+        playerGate = GameObject.Find("PlayerRoom").GetComponentInChildren<GateController>();
     }
 
     // Starts the coroutine PrepareForBattleCoroutine()
@@ -28,7 +28,7 @@ public class Arena : MonoBehaviour
     // Raise up all of the enemy gates, lower the player gate and start spawning monsters
     public IEnumerator PrepareForBattleCoroutine()
     {
-        playerGate.GetComponent<GateController>().LowerHarrows();
+        playerGate.LowerHarrows();
 
         yield return new WaitForSeconds(timeToRaiseEnemyGates);
 
@@ -42,9 +42,9 @@ public class Arena : MonoBehaviour
     // Raise up all of the enemy gates for monster deploying
     private void RaiseAllEnemyGates()
     {
-        foreach (GameObject enemyGate in enemyGates)
+        foreach (GateController enemyGate in enemyGates)
         {
-            enemyGate.GetComponent<GateController>().RaiseHarrows();
+            enemyGate.RaiseHarrows();
         }
     }
 }

@@ -6,6 +6,13 @@ public class PowerupFeatures : MonoBehaviour
 {
     private int lifeRecover = 20;
 
+    private HUD hud;
+
+    private void Start()
+    {
+        hud = FindObjectOfType<HUD>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -23,13 +30,7 @@ public class PowerupFeatures : MonoBehaviour
 
     public void HealPlayer(PlayerController playerController)
     {
-        if ((playerController.life + lifeRecover) > playerController.maxLife)
-        {
-            playerController.life = playerController.maxLife;
-        }
-        else
-        {
-            playerController.life += lifeRecover;
-        }
+        playerController.Life += lifeRecover;
+        hud.UpdatePlayerHealthBarValue(playerController.Life);
     }
 }

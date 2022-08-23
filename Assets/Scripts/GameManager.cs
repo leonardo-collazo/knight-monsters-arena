@@ -4,26 +4,34 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public float CombatCooldownTime { get; } = 2.5f;
-    public float ReceiveDamageCooldownTime { get; } = 3.0f;
+    [SerializeField] private float combatCooldownTime;
+    [SerializeField] private float receiveDamageCooldownTime;
     
+    public float CombatCooldownTime { get => combatCooldownTime; }
+    public float ReceiveDamageCooldownTime { get => receiveDamageCooldownTime; }
+
     public bool isGameActive;
 
     [SerializeField] private ThirdPersonCameraController thirdPersonCamera;
-    
+    [SerializeField] private HUD hud;
+
     private PlayerController playerController;
     private SpawnManager spawnManager;
 
     void Start()
     {
-        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        playerController = FindObjectOfType<PlayerController>();
+        spawnManager = FindObjectOfType<SpawnManager>();
     }
 
     // Starts the game
     public void StartGame()
     {
-        playerController.life = playerController.maxLife;
+        playerController.Life = playerController.MaxLife;
+
+        hud.ShowHUDPanel();
+        hud.UpdatePlayerHealthBarValue(playerController.Life);
+
         isGameActive = true;
         thirdPersonCamera.EnableThirdPersonCamera();
     }

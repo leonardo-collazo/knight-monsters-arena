@@ -28,7 +28,7 @@ public class EnemyController : MonoBehaviour
     private Animator enemyAnim;
 
     public SoulColors SoulColor { get => soulColor; }
-    public int PhysicalDamage { get => physicalDamage; }
+    public float PhysicalDamage { get => physicalDamage; }
     public float TimeBeforeAttacking { get => timeBeforeAttacking; }
 
     #endregion
@@ -38,8 +38,8 @@ public class EnemyController : MonoBehaviour
         enemyRb = GetComponent<Rigidbody>();
         enemyCollider = GetComponent<Collider>();
         targetToFollow = GameObject.FindGameObjectWithTag("Player").transform;
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        gameManager = FindObjectOfType<GameManager>();
+        spawnManager = FindObjectOfType<SpawnManager>();
         enemyAnim = GetEnemyAnimator();
     }
 

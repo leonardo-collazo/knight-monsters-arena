@@ -8,7 +8,7 @@ public class StartSpawningSensor : MonoBehaviour
 
     private void Start()
     {
-        arena = GameObject.Find("Arena").GetComponent<Arena>();
+        arena = FindObjectOfType<Arena>();
     }
 
     // When the player collide with the sensor, the player gate is closed,

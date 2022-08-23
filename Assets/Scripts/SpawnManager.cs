@@ -22,7 +22,7 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        environmentBoundaries = GameObject.Find("Environment").GetComponent<EnvironmentBoundaries>();
+        environmentBoundaries = FindObjectOfType<EnvironmentBoundaries>();
     }
 
     #region Spawning methods

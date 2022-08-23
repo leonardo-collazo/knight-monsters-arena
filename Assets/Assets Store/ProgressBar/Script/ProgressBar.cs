@@ -42,11 +42,8 @@ public class ProgressBar : MonoBehaviour
             value = Mathf.Clamp(value, 0, 100);
             barValue = value;
             UpdateValue(barValue);
-
         }
     }
-
-        
 
     private void Awake()
     {
@@ -89,7 +86,6 @@ public class ProgressBar : MonoBehaviour
 
     }
 
-
     private void Update()
     {
         if (!Application.isPlaying)
@@ -109,7 +105,11 @@ public class ProgressBar : MonoBehaviour
             if (Alert >= barValue && Time.time > nextPlay)
             {
                 nextPlay = Time.time + RepeatRate;
-                audiosource.PlayOneShot(sound);
+
+                if (sound != null)
+                {
+                    audiosource.PlayOneShot(sound);
+                }
             }
         }
     }

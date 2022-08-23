@@ -16,7 +16,7 @@ public class LaunchObjectController : MonoBehaviour
 
     void Start()
     {
-        environmentBoundaries = GameObject.Find("Environment").GetComponent<EnvironmentBoundaries>();
+        environmentBoundaries = FindObjectOfType<EnvironmentBoundaries>();
         rb = GetComponent<Rigidbody>();
 
         rb.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse);
