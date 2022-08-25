@@ -33,6 +33,7 @@ public class ProgressBar : MonoBehaviour
     private AudioSource audiosource;
     private Text txtTitle;
     private float barValue;
+    
     public float BarValue
     {
         get { return barValue; }
@@ -66,8 +67,6 @@ public class ProgressBar : MonoBehaviour
         barBackground.sprite = BarBackGroundSprite;
 
         UpdateValue(barValue);
-
-
     }
 
     void UpdateValue(float val)
@@ -83,7 +82,6 @@ public class ProgressBar : MonoBehaviour
         {
             bar.color = BarColor;
         }
-
     }
 
     private void Update()
@@ -113,5 +111,4 @@ public class ProgressBar : MonoBehaviour
             }
         }
     }
-
 }

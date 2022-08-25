@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum LaunchObjectMovementType { Up, Right, Down, Left }
+public enum LaunchObjectMovementType { None, Up, Right, Down, Left }
 
 public class LaunchObjectController : MonoBehaviour
 {
@@ -9,14 +9,14 @@ public class LaunchObjectController : MonoBehaviour
     
     public int physicalDamage;
 
-    private EnvironmentBoundaries environmentBoundaries;
+    private Environment environment;
     private Rigidbody rb;
 
     public LaunchObjectMovementType movementType;
 
     void Start()
     {
-        environmentBoundaries = FindObjectOfType<EnvironmentBoundaries>();
+        environment = FindObjectOfType<Environment>();
         rb = GetComponent<Rigidbody>();
 
         rb.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse);
@@ -50,7 +50,7 @@ public class LaunchObjectController : MonoBehaviour
         {
             transform.Translate(movementSpeed * Time.deltaTime * Vector3.left, Space.World);
         }
-        else
+        else if (movementType == LaunchObjectMovementType.Up)
         {
             transform.Translate(movementSpeed * Time.deltaTime * Vector3.forward, Space.World);
         }
@@ -65,9 +65,30 @@ public class LaunchObjectController : MonoBehaviour
     // Checks if the launch object is outside of the boundaries
     bool IsOutsideBoundaries()
     {
-        return transform.position.x < environmentBoundaries.leftWallPos.position.x || 
-            transform.position.x > environmentBoundaries.rightWallPos.position.x || 
-            transform.position.z < environmentBoundaries.behindWallPos.position.z || 
-            transform.position.z > environmentBoundaries.forwardWallPos.position.z;
+        return transform.position.x < environment.leftWallPos.position.x || 
+            transform.position.x > environment.rightWallPos.position.x || 
+            transform.position.z < environment.behindWallPos.position.z || 
+            transform.position.z > environment.forwardWallPos.position.z;
+    }
+
+    // Sets the movement type of the launchobject in dependence of the given position
+    public void SetLaunchObjectMovement()
+    {
+        if (transform.position.x == environment.leftWallPos.position.x)
+        {
+            movementType = LaunchObjectMovementType.Right;
+        }
+        else if (transform.position.x == environment.rightWallPos.position.x)
+        {
+            movementType = LaunchObjectMovementType.Left;
+        }
+        else if (transform.position.z == environment.forwardWallPos.position.z)
+        {
+            movementType = LaunchObjectMovementType.Down;
+        }
+        else
+        {
+            movementType = LaunchObjectMovementType.Up;
+        }
     }
 }

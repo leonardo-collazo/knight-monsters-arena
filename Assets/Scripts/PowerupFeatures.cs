@@ -31,6 +31,6 @@ public class PowerupFeatures : MonoBehaviour
     public void HealPlayer(PlayerController playerController)
     {
         playerController.Life += lifeRecover;
-        hud.UpdatePlayerHealthBarValue(playerController.Life);
+        hud.UpdatePlayerHealthBarValue(playerController.GetLifeInPercent());
     }
 }

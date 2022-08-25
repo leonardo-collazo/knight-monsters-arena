@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreditsPanel : MonoBehaviour
+public class ControlsPanel : MonoBehaviour
 {
-    // Shows credits panel
-    public void ShowCreditsPanel()
+    // Shows controls panel
+    public void ShowControlsPanel()
     {
         gameObject.SetActive(true);
     }
 
-    // Hides credits panel
-    public void HideCreditsPanel()
+    // Hides controls panel
+    public void HideControlsPanel()
     {
         gameObject.SetActive(false);
     }

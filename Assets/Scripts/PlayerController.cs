@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (gameManager.isGameActive && !IsRecoveringFromDeath())
+        if (gameManager.IsGameActive && !IsRecoveringFromDeath())
         {
             if (Input.GetMouseButtonDown(0) && !IsRunning() && !IsAttacking())
             {
@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (gameManager.isGameActive && !IsRecoveringFromDeath() && !IsAttacking() && !IsDefending && !IsGettingHit())
+        if (gameManager.IsGameActive && !IsRecoveringFromDeath() && !IsAttacking() && !IsDefending && !IsGettingHit())
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             float verticalInput = Input.GetAxisRaw("Vertical");
@@ -198,10 +198,10 @@ public class PlayerController : MonoBehaviour
     // Plays the player's get hit animation and subtracts life from the player
     void GetHitFromEnemy(GameObject enemy)
     {
-        if (!IsDefending && !IsRecoveringFromDeath() && gameManager.isGameActive)
+        if (!IsDefending && !IsRecoveringFromDeath() && gameManager.IsGameActive)
         {
             life -= enemy.GetComponent<EnemyController>().PhysicalDamage;
-            hud.UpdatePlayerHealthBarValue(life);
+            hud.UpdatePlayerHealthBarValue(GetLifeInPercent());
 
             if (life > 0)
             {
@@ -213,9 +213,10 @@ public class PlayerController : MonoBehaviour
     // Plays the player's get hit animation and subtracts life from the player
     void GetHitFromLaunchObject(GameObject launchObject)
     {
-        if (!IsDefending && !IsRecoveringFromDeath() && gameManager.isGameActive)
+        if (!IsDefending && !IsRecoveringFromDeath() && gameManager.IsGameActive)
         {
             life -= launchObject.GetComponent<LaunchObjectController>().physicalDamage;
+            hud.UpdatePlayerHealthBarValue(GetLifeInPercent());
 
             if (life > 0)
             {
@@ -228,6 +229,12 @@ public class PlayerController : MonoBehaviour
     public Animator GetPlayerAnimator()
     {
         return GetComponentInChildren<Animator>();
+    }
+
+    // Gets the player's life in percent
+    public float GetLifeInPercent()
+    {
+        return life / maxLife * 100;
     }
 
     #endregion

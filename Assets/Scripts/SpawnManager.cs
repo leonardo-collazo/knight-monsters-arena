@@ -3,6 +3,8 @@ using UnityEngine;
 public enum LaunchObjectSpawnPosition { North, South, West, East }
 public class SpawnManager : MonoBehaviour
 {
+    #region Variables
+
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private GameObject[] powerups;
     [SerializeField] private GameObject[] launchObjects;
@@ -17,12 +19,14 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] int amountLaunchObjectToSpawn;
 
     private Transform playerTransform;
-    private EnvironmentBoundaries environmentBoundaries;
+    private Environment environment;
+
+    #endregion
 
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        environmentBoundaries = FindObjectOfType<EnvironmentBoundaries>();
+        environment = FindObjectOfType<Environment>();
     }
 
     #region Spawning methods
@@ -68,8 +72,8 @@ public class SpawnManager : MonoBehaviour
             GameObject launchObject = launchObjects[launchObjectIndex];
             Vector3 position = GenerateSpawningLaunchObjectPosition();
 
-            SetLaunchObjectMovement(launchObject.GetComponent<LaunchObjectController>(), position);
-            Instantiate(launchObject, position, launchObject.transform.rotation);
+            launchObject = Instantiate(launchObject, position, launchObject.transform.rotation);
+            launchObject.GetComponent<LaunchObjectController>().SetLaunchObjectMovement();
         }
     }
 
@@ -101,8 +105,8 @@ public class SpawnManager : MonoBehaviour
 
     Vector3 GenerateSpawningPowerupPosition(GameObject powerup)
     {
-        float xPosition = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
-        float zPosition = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
+        float xPosition = Random.Range(environment.leftWallPos.position.x, environment.rightWallPos.position.x);
+        float zPosition = Random.Range(environment.behindWallPos.position.z, environment.forwardWallPos.position.z);
         
         Vector3 position = new Vector3(xPosition, powerup.transform.localScale.y / 2, zPosition);
 
@@ -118,48 +122,27 @@ public class SpawnManager : MonoBehaviour
         // Depending on the place, a position is generated
         if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.West)
         {
-            position.x = environmentBoundaries.leftWallPos.position.x;
-            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
+            position.x = environment.leftWallPos.position.x;
+            position.z = Random.Range(environment.behindWallPos.position.z, environment.forwardWallPos.position.z);
         }
 
         else if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.North)
         {
-            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
-            position.z = environmentBoundaries.forwardWallPos.position.z;
+            position.x = Random.Range(environment.leftWallPos.position.x, environment.rightWallPos.position.x);
+            position.z = environment.forwardWallPos.position.z;
         }
         else if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.East)
         {
-            position.x = environmentBoundaries.rightWallPos.position.x;
-            position.z = Random.Range(environmentBoundaries.behindWallPos.position.z, environmentBoundaries.forwardWallPos.position.z);
+            position.x = environment.rightWallPos.position.x;
+            position.z = Random.Range(environment.behindWallPos.position.z, environment.forwardWallPos.position.z);
         }
         else
         {
-            position.x = Random.Range(environmentBoundaries.leftWallPos.position.x, environmentBoundaries.rightWallPos.position.x);
-            position.z = environmentBoundaries.behindWallPos.position.z;
+            position.x = Random.Range(environment.leftWallPos.position.x, environment.rightWallPos.position.x);
+            position.z = environment.behindWallPos.position.z;
         }        
 
         return position;
-    }
-
-    // Sets the movement type of the launchobject in dependence of the given position
-    void SetLaunchObjectMovement(LaunchObjectController launchObjectController, Vector3 position)
-    {
-        if (position.x == environmentBoundaries.leftWallPos.position.x)
-        {
-            launchObjectController.movementType = LaunchObjectMovementType.Right;
-        }
-        else if (position.x == environmentBoundaries.rightWallPos.position.x)
-        {
-            launchObjectController.movementType = LaunchObjectMovementType.Left;
-        }
-        else if (position.z == environmentBoundaries.forwardWallPos.position.z)
-        {
-            launchObjectController.movementType = LaunchObjectMovementType.Down;
-        }
-        else
-        {
-            launchObjectController.movementType = LaunchObjectMovementType.Up;
-        }
     }
 
     #endregion

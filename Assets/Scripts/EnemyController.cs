@@ -11,6 +11,7 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private float life;
     [SerializeField] private float speed;
+    [SerializeField] private float score;
     [SerializeField] private float timeBeforeDisappear;
     [SerializeField] private float timeBeforeAttacking;
     [SerializeField] private int physicalDamage;
@@ -26,6 +27,7 @@ public class EnemyController : MonoBehaviour
     private GameManager gameManager;
     private SpawnManager spawnManager;
     private Animator enemyAnim;
+    private HUD hud;
 
     public SoulColors SoulColor { get => soulColor; }
     public float PhysicalDamage { get => physicalDamage; }
@@ -41,11 +43,12 @@ public class EnemyController : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         spawnManager = FindObjectOfType<SpawnManager>();
         enemyAnim = GetEnemyAnimator();
+        hud = FindObjectOfType<HUD>();
     }
 
     void FixedUpdate()
     {
-        if (gameManager.isGameActive && !IsDead() && canMove)
+        if (gameManager.IsGameActive && !IsDead() && canMove)
         {
             MoveEnemy();
         }
@@ -77,14 +80,19 @@ public class EnemyController : MonoBehaviour
         enemyAnim.SetBool("Dead_b", true);
         enemyRb.isKinematic = true;
         enemyCollider.enabled = false;
+
+        gameManager.UpdateScore(score);
+        hud.UpdateTextScore();
+
         yield return new WaitForSeconds(timeBeforeDisappear);
+
         spawnManager.SpawnEnemySoul(gameObject);
         Destroy(gameObject);
     }
 
     #endregion
 
-    #region Methods for verify enemy status
+    #region Methods for verify status
 
     // Return true if the enemy is dead or false otherwise
     bool IsDead()

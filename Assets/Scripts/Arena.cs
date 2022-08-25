@@ -15,8 +15,8 @@ public class Arena : MonoBehaviour
     private void Start()
     {
         spawnManager = FindObjectOfType<SpawnManager>();
-        enemyGates = GameObject.Find("EnemyRooms").GetComponentsInChildren<GateController>();
-        playerGate = GameObject.Find("PlayerRoom").GetComponentInChildren<GateController>();
+        enemyGates = transform.Find("EnemyRooms").GetComponentsInChildren<GateController>();
+        playerGate = transform.Find("PlayerRoom").GetComponentInChildren<GateController>();
     }
 
     // Starts the coroutine PrepareForBattleCoroutine()
