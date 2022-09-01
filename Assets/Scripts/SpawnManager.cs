@@ -5,18 +5,22 @@ public class SpawnManager : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private GameObject[] enemies;
-    [SerializeField] private GameObject[] powerups;
-    [SerializeField] private GameObject[] launchObjects;
-    [SerializeField] private GameObject[] effects;
-    [SerializeField] private Transform[] enemySpawnPositions;
+    [SerializeField] int amountLaunchObjectToSpawn;
 
     [SerializeField] private float enemySpawnTime;
     [SerializeField] private float powerupSpawnTime;
     [SerializeField] private float launchObjectSpawnTime;
     [SerializeField] private float spawnStartDelay;
 
-    [SerializeField] int amountLaunchObjectToSpawn;
+    [SerializeField] private bool spawnEnemies;
+    [SerializeField] private bool spawnPowerups;
+    [SerializeField] private bool spawnLaunchObjects;
+
+    [SerializeField] private GameObject[] enemies;
+    [SerializeField] private GameObject[] powerups;
+    [SerializeField] private GameObject[] launchObjects;
+    [SerializeField] private GameObject[] effects;
+    [SerializeField] private Transform[] enemySpawnPositions;
 
     private Transform playerTransform;
     private Environment environment;
@@ -34,10 +38,20 @@ public class SpawnManager : MonoBehaviour
     // Starts spawning enemies, powerups and launch objects in random places
     public void StartAllSpawns()
     {
-        // Descomentar todo
-        InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
-        // InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
-        // InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
+        if (spawnEnemies)
+        {
+            InvokeRepeating("SpawnEnemy", spawnStartDelay, enemySpawnTime);
+        }
+
+        if (spawnPowerups)
+        {
+            InvokeRepeating("SpawnPowerup", spawnStartDelay, powerupSpawnTime);
+        }
+
+        if (spawnLaunchObjects)
+        {
+            InvokeRepeating("SpawnLaunchObject", spawnStartDelay, launchObjectSpawnTime);
+        }
     }
 
     // Spawns an enemy in a random place near the limits

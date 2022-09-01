@@ -8,14 +8,14 @@ public class PlayerController : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private float movementSpeed = 200.0f;
-    [SerializeField] private float walkingAnimSpeedValue = 0.4f;
-    [SerializeField] private float runningAnimSpeedValue = 1.0f;
-    [SerializeField] private float turnSmoothTime = 0.1f;
-    [SerializeField] private float life = 100;
-    [SerializeField] private float maxLife = 100;
+    [SerializeField] private float life;
+    [SerializeField] private float maxLife;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float walkingAnimSpeedValue;
+    [SerializeField] private float runningAnimSpeedValue;
+    [SerializeField] private float turnSmoothTime;
 
-    private float idleAnimSpeedValue = 0f;
+    private float idleAnimSpeedValue;
     private float turnSmoothVelocity;
 
     public bool IsImmune { get; set; }
@@ -42,6 +42,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public float MovementSpeed
+    {
+        get
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                playerAnim.SetFloat("Speed_f", runningAnimSpeedValue);
+                return movementSpeed * 2;
+            }
+            else
+            {
+                playerAnim.SetFloat("Speed_f", walkingAnimSpeedValue);
+                return movementSpeed;
+            }
+        }
+    }
+
+    public float TimeRecoveringFromDeath { get; } = 3.0f;
+
     #endregion
 
     #region Unity methods
@@ -60,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (gameManager.IsGameActive && !IsRecoveringFromDeath())
+        if (gameManager.IsGameActive && !gameManager.IsGamePaused && !IsRecoveringFromDeath())
         {
             if (Input.GetMouseButtonDown(0) && !IsRunning() && !IsAttacking())
             {
@@ -88,16 +107,19 @@ public class PlayerController : MonoBehaviour
 
             if (horizontalInput != 0 || verticalInput != 0)
             {
+                SetPlayerMovementAnimation();
                 Move(horizontalInput, verticalInput);
             }
             else
             {
-                StopMoving();
+                StopMovingRigibdoy();
+                StopMovingAnimation();
             }
         }
         else
         {
-            StopMoving();
+            StopMovingRigibdoy();
+            StopMovingAnimation();
         }
     }
 
@@ -118,14 +140,31 @@ public class PlayerController : MonoBehaviour
         direction = (Quaternion.Euler(0f, angle, 0f) * Vector3.forward).normalized;
 
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
-        playerRb.velocity = direction * GetMovementSpeed() * Time.deltaTime;
+        playerRb.velocity = direction * MovementSpeed * Time.deltaTime;
     }
 
-    // Stops player movement
-    void StopMoving()
+    // Sets the player´s movement animation
+    void SetPlayerMovementAnimation()
+    {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            playerAnim.SetFloat("Speed_f", runningAnimSpeedValue);
+        }
+        else
+        {
+            playerAnim.SetFloat("Speed_f", walkingAnimSpeedValue);
+        }
+    }
+
+    // Stops player's rigidbody movement
+    void StopMovingRigibdoy()
     {
         playerRb.velocity = Vector3.zero;
+    }
 
+    // Stops player movement animation
+    void StopMovingAnimation()
+    {
         playerAnim.SetFloat("Speed_f", idleAnimSpeedValue);
         playerAnim.SetBool("Idle_b", true);
     }
@@ -176,24 +215,21 @@ public class PlayerController : MonoBehaviour
         IsDefending = false;
     }
 
+    // The player dies
+    public void Die()
+    {
+        playerAnim.SetBool("Dead_b", true);
+    }
+
+    // The player recovers from death
+    public void RecoverFromDeath()
+    {
+        playerAnim.SetBool("Dead_b", false);
+    }
+
     #endregion
 
     #region Get methods
-
-    // Gets the player's movement speed and sets the player´s movement animation
-    float GetMovementSpeed()
-    {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            playerAnim.SetFloat("Speed_f", runningAnimSpeedValue);
-            return movementSpeed * 2;
-        }
-        else
-        {
-            playerAnim.SetFloat("Speed_f", walkingAnimSpeedValue);
-            return movementSpeed;
-        }
-    }
 
     // Plays the player's get hit animation and subtracts life from the player
     void GetHitFromEnemy(GameObject enemy)
@@ -259,6 +295,12 @@ public class PlayerController : MonoBehaviour
         return playerAnim.GetCurrentAnimatorStateInfo(0).IsTag("GetHit");
     }
 
+    // Check if the player is dead
+    private bool IsDead()
+    {
+        return life <= 0;
+    }
+
     // Check if the player is recovering from death
     public bool IsRecoveringFromDeath()
     {
@@ -273,38 +315,34 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy") && !IsImmune)
         {
-            StartCoroutine(gameManager.ImmunizePlayer(collision.gameObject.GetComponent<EnemyController>().TimeBeforeAttacking));
+            // StartCoroutine(gameManager.ImmunizePlayer(collision.gameObject.GetComponent<EnemyController>().TimeBeforeAttacking));
+        }
+        else if (collision.gameObject.CompareTag("LaunchObject"))
+        {
+            GetHitFromLaunchObject(collision.gameObject);
+            collision.gameObject.GetComponent<LaunchObjectController>().DestroyLaunchObject();
+            StartCoroutine(gameManager.ImmunizePlayer(gameManager.ReceiveDamageCooldownTime));
+
+            if (IsDead())
+            {
+                Die();
+                gameManager.GameOver();
+            }
         }
     }
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") && !IsImmune && collision.gameObject.GetComponent<EnemyController>().IsAttacking())
+        if (!IsImmune && collision.gameObject.CompareTag("Enemy") && collision.gameObject.GetComponent<EnemyController>().IsAttacking())
         {
             GetHitFromEnemy(collision.gameObject);
-
-            if (life <= 0)
-            {
-                gameManager.GameOver();
-            }
-
             StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
-        }
-    }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("LaunchObject"))
-        {
-            GetHitFromLaunchObject(other.gameObject);
-            Destroy(other.gameObject);
-
-            if (life <= 0)
+            if (IsDead())
             {
+                Die();
                 gameManager.GameOver();
             }
-
-            StartCoroutine(gameManager.ImmunizePlayer(gameManager.ReceiveDamageCooldownTime));
         }
     }
 

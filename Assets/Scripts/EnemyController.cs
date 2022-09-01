@@ -50,14 +50,14 @@ public class EnemyController : MonoBehaviour
     {
         if (gameManager.IsGameActive && !IsDead() && canMove)
         {
-            MoveEnemy();
+            Move();
         }
     }
 
     #region Actions
 
     // The movement of the enemy
-    void MoveEnemy()
+    void Move()
     {
         Vector3 direction = (targetToFollow.position - transform.position).normalized;
         enemyRb.velocity = direction * speed * Time.deltaTime;
@@ -67,11 +67,15 @@ public class EnemyController : MonoBehaviour
     // Attacks
     IEnumerator Attack()
     {
-        canAttack = false;
         yield return new WaitForSeconds(TimeBeforeAttacking);
         enemyAnim.SetTrigger("Attack_t");
-        yield return new WaitForSeconds(gameManager.CombatCooldownTime);
         canAttack = true;
+
+        //canAttack = false;
+        //yield return new WaitForSeconds(TimeBeforeAttacking);
+        //enemyAnim.SetTrigger("Attack_t");
+        //yield return new WaitForSeconds(gameManager.CombatCooldownTime);
+        //canAttack = true;
     }
 
     // Plays the enemy's death animation and destroy the enemy after a few seconds
@@ -136,12 +140,30 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (canAttack)
+            if (canAttack && gameManager.IsGameActive && !collision.gameObject.GetComponent<PlayerController>().IsImmune)
             {
+                canAttack = false;
                 StartCoroutine(Attack());
             }
+
+            //if (canAttack && gameManager.IsGameActive)
+            //{
+            //    StartCoroutine(Attack());
+            //}
         }
     }
+
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))        //////////// Codigo de prueba //////////////////
+    //    {
+    //        if (gameManager.IsGameActive)
+    //        {
+    //            StopCoroutine(Attack());
+    //            canAttack = true;
+    //        }
+    //    }
+    //}
 
     // If the enemy collides with a weapon and the owner of that weapon is attacking, the enemy will recive a hit
     private void OnTriggerEnter(Collider other)

@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     #region Variables
 
-    private float gameScore = 0;
+    private float gameScore;
 
     public bool IsGameActive { get; set; }
     public bool IsGamePaused { get; set; }
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float receiveDamageCooldownTime;
 
     [SerializeField] private ThirdPersonCameraController thirdPersonCamera;
+    [SerializeField] private GameObject pausePanelGroup;
+    [SerializeField] private GameOverMenu gameOverMenu;
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private HUD hud;
 
@@ -43,9 +46,9 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && IsGameActive)
         {
-            if (!IsGamePaused && IsGameActive)
+            if (!IsGamePaused)
             {
                 PauseGame();
             }
@@ -56,24 +59,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    #region Game main management methods
+    #region Game management methods
 
     // Starts the game
     public void StartGame()
     {
         playerController.Life = playerController.MaxLife;
 
-        hud.ConfigureToStartGame();
+        hud.ShowHUDPanel();
+        hud.ResetComponentValues();
         thirdPersonCamera.EnableThirdPersonCamera();
 
         IsGameActive = true;
     }
 
     // Restarts the game
-    public void RestartGame()
+    public void PlayAgain()
     {
-        playerController.GetPlayerAnimator().SetBool("Dead_b", false);
+        gameOverMenu.HideGameOverMenu();
+        playerController.RecoverFromDeath();
+        ImmunizePlayer(playerController.TimeRecoveringFromDeath);
+        
         StartGame();
+        spawnManager.StartAllSpawns();
     }
 
     // Pauses the game
@@ -85,7 +93,6 @@ public class GameManager : MonoBehaviour
         pausePanel.ShowPausePanel();
 
         IsGamePaused = true;
-        IsGameActive = false;
     }
 
     // Reanudes the game
@@ -93,19 +100,21 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
 
-        pausePanel.HidePausePanel();
+        DisablePausePanelGroup();
         hud.ShowHUDPanel();
 
         IsGamePaused = false;
-        IsGameActive = true;
     }
 
     // Checks if it's game over and if so, the game ends
     public void GameOver()
     {
         IsGameActive = false;
-        playerController.GetPlayerAnimator().SetBool("Dead_b", true);
+        thirdPersonCamera.DisableThirdPersonCamera();
+
         spawnManager.CancelInvoke();
+        hud.HideHUDPanel();
+        gameOverMenu.ShowGameOverMenu();
     }
 
     // Exites the game
@@ -115,6 +124,8 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+
+    #region Other methods
 
     // Makes the player immune to hits
     public IEnumerator ImmunizePlayer(float time)
@@ -129,4 +140,21 @@ public class GameManager : MonoBehaviour
     {
         GameScore += value;
     }
+
+    // Reload the actual scene
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name, new LoadSceneParameters());
+    }
+
+    // Disable all of the panels that could be open when the game is paused
+    private void DisablePausePanelGroup()
+    {
+        for (int i = 0; i < pausePanelGroup.transform.childCount; i++)
+        {
+            pausePanelGroup.transform.GetChild(i).gameObject.SetActive(false);
+        }
+    }
+
+    #endregion
 }

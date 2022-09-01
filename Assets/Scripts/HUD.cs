@@ -41,10 +41,9 @@ public class HUD : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Configures the HUD panel to start the game
-    public void ConfigureToStartGame()
+    // Reset the component values of the HUD
+    public void ResetComponentValues()
     {
-        ShowHUDPanel();
         UpdatePlayerHealthBarValue(playerController.GetLifeInPercent());
         UpdateTextScore();
     }

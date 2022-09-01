@@ -14,7 +14,7 @@ public class LaunchObjectController : MonoBehaviour
 
     public LaunchObjectMovementType movementType;
 
-    void Start()
+    void Awake()
     {
         environment = FindObjectOfType<Environment>();
         rb = GetComponent<Rigidbody>();
@@ -27,32 +27,23 @@ public class LaunchObjectController : MonoBehaviour
         Move();
     }
 
-    private void Update()
-    {
-        if (IsOutsideBoundaries())
-        {
-            Destroy(gameObject);
-        }
-    }
-
     // Moves the launch object
     void Move()
     {
-        if (movementType == LaunchObjectMovementType.Right)
+        switch (movementType)
         {
-            transform.Translate(movementSpeed * Time.deltaTime * Vector3.right, Space.World);
-        }
-        else if (movementType == LaunchObjectMovementType.Down)
-        {
-            transform.Translate(movementSpeed * Time.deltaTime * Vector3.back, Space.World);
-        }
-        else if (movementType == LaunchObjectMovementType.Left)
-        {
-            transform.Translate(movementSpeed * Time.deltaTime * Vector3.left, Space.World);
-        }
-        else if (movementType == LaunchObjectMovementType.Up)
-        {
-            transform.Translate(movementSpeed * Time.deltaTime * Vector3.forward, Space.World);
+            case LaunchObjectMovementType.Up:
+                transform.Translate(movementSpeed * Time.deltaTime * Vector3.forward, Space.World);
+                break;
+            case LaunchObjectMovementType.Right:
+                transform.Translate(movementSpeed * Time.deltaTime * Vector3.right, Space.World);
+                break;
+            case LaunchObjectMovementType.Down:
+                transform.Translate(movementSpeed * Time.deltaTime * Vector3.back, Space.World);
+                break;
+            case LaunchObjectMovementType.Left:
+                transform.Translate(movementSpeed * Time.deltaTime * Vector3.left, Space.World);
+                break;
         }
     }
 
@@ -60,15 +51,6 @@ public class LaunchObjectController : MonoBehaviour
     float RandomTorque()
     {
         return Random.Range(-maxTorque, maxTorque);
-    }
-
-    // Checks if the launch object is outside of the boundaries
-    bool IsOutsideBoundaries()
-    {
-        return transform.position.x < environment.leftWallPos.position.x || 
-            transform.position.x > environment.rightWallPos.position.x || 
-            transform.position.z < environment.behindWallPos.position.z || 
-            transform.position.z > environment.forwardWallPos.position.z;
     }
 
     // Sets the movement type of the launchobject in dependence of the given position
@@ -89,6 +71,21 @@ public class LaunchObjectController : MonoBehaviour
         else
         {
             movementType = LaunchObjectMovementType.Up;
+        }
+    }
+
+    // Destroy this object
+    public void DestroyLaunchObject()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // If collides with the outside sensor, destroy itself
+        if (collision.gameObject.name.Equals("Outside Sensor"))
+        {
+            DestroyLaunchObject();
         }
     }
 }

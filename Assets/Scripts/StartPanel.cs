@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class StartPanel : MonoBehaviour
 {
+    private void Start()
+    {
+        Time.timeScale = 1;
+    }
+
     // Shows start panel
     public void ShowStartPanel()
     {
