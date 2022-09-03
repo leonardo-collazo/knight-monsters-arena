@@ -8,7 +8,7 @@ public class PlayerGateController : GateController
 
     private void Start()
     {
-        dust = transform.Find("DustEffect").GetComponent<ParticleSystem>();
+        dust = transform.Find("Dust").GetComponent<ParticleSystem>();
     }
 
     void SpreadDust()

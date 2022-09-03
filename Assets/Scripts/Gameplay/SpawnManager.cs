@@ -19,7 +19,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private GameObject[] powerups;
     [SerializeField] private GameObject[] launchObjects;
-    [SerializeField] private GameObject[] effects;
+    [SerializeField] private GameObject[] souls;
+    [SerializeField] private GameObject[] powerupVFX;
     [SerializeField] private Transform[] enemySpawnPositions;
 
     private Transform playerTransform;
@@ -27,7 +28,7 @@ public class SpawnManager : MonoBehaviour
 
     #endregion
 
-    void Start()
+    private void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         environment = FindObjectOfType<Environment>();
@@ -99,11 +100,20 @@ public class SpawnManager : MonoBehaviour
 
         if (enemy.GetComponent<EnemyController>().SoulColor == SoulColors.Red)
         {
-            Instantiate(effects[0], position, effects[0].gameObject.transform.rotation);
+            Instantiate(souls[0], position, souls[0].gameObject.transform.rotation);
         }
         else if (enemy.GetComponent<EnemyController>().SoulColor == SoulColors.Blue)
         {
-            Instantiate(effects[1], position, effects[1].gameObject.transform.rotation);
+            Instantiate(souls[1], position, souls[1].gameObject.transform.rotation);
+        }
+    }
+
+    // Spawns powerup visual effects
+    public void SpawnPowerupVFX(Transform powerupPos)
+    {
+        foreach (GameObject visualEffect in powerupVFX)
+        {
+            Instantiate(visualEffect, powerupPos.position, visualEffect.transform.rotation);
         }
     }
 
@@ -119,8 +129,8 @@ public class SpawnManager : MonoBehaviour
 
     Vector3 GenerateSpawningPowerupPosition(GameObject powerup)
     {
-        float xPosition = Random.Range(environment.leftWallPos.position.x, environment.rightWallPos.position.x);
-        float zPosition = Random.Range(environment.behindWallPos.position.z, environment.forwardWallPos.position.z);
+        float xPosition = Random.Range(environment.LeftLimit.position.x, environment.RightLimit.position.x);
+        float zPosition = Random.Range(environment.LowerLimit.position.z, environment.UpperLimit.position.z);
         
         Vector3 position = new Vector3(xPosition, powerup.transform.localScale.y / 2, zPosition);
 
@@ -136,24 +146,24 @@ public class SpawnManager : MonoBehaviour
         // Depending on the place, a position is generated
         if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.West)
         {
-            position.x = environment.leftWallPos.position.x;
-            position.z = Random.Range(environment.behindWallPos.position.z, environment.forwardWallPos.position.z);
+            position.x = environment.LeftLimit.position.x;
+            position.z = Random.Range(environment.LowerLimit.position.z, environment.UpperLimit.position.z);
         }
 
         else if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.North)
         {
-            position.x = Random.Range(environment.leftWallPos.position.x, environment.rightWallPos.position.x);
-            position.z = environment.forwardWallPos.position.z;
+            position.x = Random.Range(environment.LeftLimit.position.x, environment.RightLimit.position.x);
+            position.z = environment.UpperLimit.position.z;
         }
         else if ((LaunchObjectSpawnPosition)enumPosition == LaunchObjectSpawnPosition.East)
         {
-            position.x = environment.rightWallPos.position.x;
-            position.z = Random.Range(environment.behindWallPos.position.z, environment.forwardWallPos.position.z);
+            position.x = environment.RightLimit.position.x;
+            position.z = Random.Range(environment.LowerLimit.position.z, environment.UpperLimit.position.z);
         }
         else
         {
-            position.x = Random.Range(environment.leftWallPos.position.x, environment.rightWallPos.position.x);
-            position.z = environment.behindWallPos.position.z;
+            position.x = Random.Range(environment.LeftLimit.position.x, environment.RightLimit.position.x);
+            position.z = environment.LowerLimit.position.z;
         }        
 
         return position;

@@ -56,15 +56,15 @@ public class LaunchObjectController : MonoBehaviour
     // Sets the movement type of the launchobject in dependence of the given position
     public void SetLaunchObjectMovement()
     {
-        if (transform.position.x == environment.leftWallPos.position.x)
+        if (transform.position.x == environment.LeftLimit.position.x)
         {
             movementType = LaunchObjectMovementType.Right;
         }
-        else if (transform.position.x == environment.rightWallPos.position.x)
+        else if (transform.position.x == environment.RightLimit.position.x)
         {
             movementType = LaunchObjectMovementType.Left;
         }
-        else if (transform.position.z == environment.forwardWallPos.position.z)
+        else if (transform.position.z == environment.UpperLimit.position.z)
         {
             movementType = LaunchObjectMovementType.Down;
         }

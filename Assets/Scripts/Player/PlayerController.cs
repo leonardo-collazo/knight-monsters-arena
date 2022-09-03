@@ -10,17 +10,20 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float life;
     [SerializeField] private float maxLife;
+
     [SerializeField] private float movementSpeed;
     [SerializeField] private float walkingAnimSpeedValue;
     [SerializeField] private float runningAnimSpeedValue;
-    [SerializeField] private float turnSmoothTime;
 
-    private float idleAnimSpeedValue;
+    [SerializeField] private float turnSmoothTime;
+    [SerializeField] private float timeRecoveringFromDeath;
+
     private float turnSmoothVelocity;
 
     public bool IsImmune { get; set; }
     public bool IsDefending { get; private set; }
     public float MaxLife { get => maxLife; }
+    public float TimeRecoveringFromDeath { get => timeRecoveringFromDeath; }
 
     private Rigidbody playerRb;
     private Animator playerAnim;
@@ -58,8 +61,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    public float TimeRecoveringFromDeath { get; } = 3.0f;
 
     #endregion
 
@@ -165,7 +166,7 @@ public class PlayerController : MonoBehaviour
     // Stops player movement animation
     void StopMovingAnimation()
     {
-        playerAnim.SetFloat("Speed_f", idleAnimSpeedValue);
+        playerAnim.SetFloat("Speed_f", 0);
         playerAnim.SetBool("Idle_b", true);
     }
 

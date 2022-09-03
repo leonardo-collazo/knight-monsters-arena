@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
-    private int lifeRecover = 20;
+    [SerializeField] private int lifeRecover;
 
     private HUD hud;
+    private SpawnManager spawnManager;
 
     private void Start()
     {
         hud = FindObjectOfType<HUD>();
+        spawnManager = FindObjectOfType<SpawnManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,11 +26,13 @@ public class Powerup : MonoBehaviour
                 HealPlayer(playerController);
             }
 
+            spawnManager.SpawnPowerupVFX(transform);
             Destroy(gameObject);
         }
     }
 
-    public void HealPlayer(PlayerController playerController)
+    // Heals the player
+    void HealPlayer(PlayerController playerController)
     {
         playerController.Life += lifeRecover;
         hud.UpdatePlayerHealthBarValue(playerController.GetLifeInPercent());
