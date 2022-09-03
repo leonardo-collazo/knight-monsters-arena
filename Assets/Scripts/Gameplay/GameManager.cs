@@ -139,6 +139,7 @@ public class GameManager : MonoBehaviour
     public void UpdateScore(float value)
     {
         GameScore += value;
+        hud.UpdateTextScore();
     }
 
     // Reload the actual scene

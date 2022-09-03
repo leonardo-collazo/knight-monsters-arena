@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GateController : MonoBehaviour
 {
-    [SerializeField] private float harrowMovementSpeed;
+    [SerializeField] protected float harrowMovementSpeed;
 
-    [SerializeField] private GameObject backHarrow;
-    [SerializeField] private GameObject frontHarrow;
+    [SerializeField] protected GameObject backHarrow;
+    [SerializeField] protected GameObject frontHarrow;
 
-    private float maxError = 0.001f;
+    protected float maxError = 0.001f;
 
     #region Lower harrows methods
 
@@ -23,7 +23,7 @@ public class GateController : MonoBehaviour
     }
 
     // Lower front harrow
-    IEnumerator LowerFrontHarrow(float Ymovement)
+    public virtual IEnumerator LowerFrontHarrow(float Ymovement)
     {
         Vector3 frontHarrowNewPos = frontHarrow.transform.localPosition;
         frontHarrowNewPos.y += Ymovement;
@@ -38,7 +38,7 @@ public class GateController : MonoBehaviour
     }
 
     // Lower back harrow
-    IEnumerator LowerBackHarrow(float Ymovement)
+    public virtual IEnumerator LowerBackHarrow(float Ymovement)
     {
         Vector3 backHarrowNewPos = backHarrow.transform.localPosition;
         backHarrowNewPos.y += Ymovement;

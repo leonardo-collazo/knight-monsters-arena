@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRb;
     private Animator playerAnim;
     private GameManager gameManager;
-    
+
     [SerializeField] private HUD hud;
     [SerializeField] private Transform cam;
 
@@ -234,15 +234,12 @@ public class PlayerController : MonoBehaviour
     // Plays the player's get hit animation and subtracts life from the player
     void GetHitFromEnemy(GameObject enemy)
     {
-        if (!IsDefending && !IsRecoveringFromDeath() && gameManager.IsGameActive)
-        {
-            life -= enemy.GetComponent<EnemyController>().PhysicalDamage;
-            hud.UpdatePlayerHealthBarValue(GetLifeInPercent());
+        Life -= enemy.GetComponent<EnemyController>().PhysicalDamage;
+        hud.UpdatePlayerHealthBarValue(GetLifeInPercent());
 
-            if (life > 0)
-            {
-                playerAnim.SetTrigger("GetHit_trig");
-            }
+        if (life > 0)
+        {
+            playerAnim.SetTrigger("GetHit_trig");
         }
     }
 
@@ -309,15 +306,11 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region Collision and trigger
+    #region Collisions
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") && !IsImmune)
-        {
-            // StartCoroutine(gameManager.ImmunizePlayer(collision.gameObject.GetComponent<EnemyController>().TimeBeforeAttacking));
-        }
-        else if (collision.gameObject.CompareTag("LaunchObject"))
+        if (collision.gameObject.CompareTag("LaunchObject"))
         {
             GetHitFromLaunchObject(collision.gameObject);
             collision.gameObject.GetComponent<LaunchObjectController>().DestroyLaunchObject();
@@ -333,10 +326,11 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        if (!IsImmune && collision.gameObject.CompareTag("Enemy") && collision.gameObject.GetComponent<EnemyController>().IsAttacking())
+        if (!IsImmune && !IsDefending && !IsRecoveringFromDeath() && gameManager.IsGameActive &&
+            collision.gameObject.CompareTag("Enemy") && collision.gameObject.GetComponent<EnemyController>().IsAttacking())
         {
-            GetHitFromEnemy(collision.gameObject);
             StartCoroutine(gameManager.ImmunizePlayer(gameManager.CombatCooldownTime));
+            GetHitFromEnemy(collision.gameObject);
 
             if (IsDead())
             {

@@ -67,15 +67,11 @@ public class EnemyController : MonoBehaviour
     // Attacks
     IEnumerator Attack()
     {
+        canAttack = false;
         yield return new WaitForSeconds(TimeBeforeAttacking);
         enemyAnim.SetTrigger("Attack_t");
+        yield return new WaitForSeconds(gameManager.CombatCooldownTime);
         canAttack = true;
-
-        //canAttack = false;
-        //yield return new WaitForSeconds(TimeBeforeAttacking);
-        //enemyAnim.SetTrigger("Attack_t");
-        //yield return new WaitForSeconds(gameManager.CombatCooldownTime);
-        //canAttack = true;
     }
 
     // Plays the enemy's death animation and destroy the enemy after a few seconds
@@ -84,9 +80,6 @@ public class EnemyController : MonoBehaviour
         enemyAnim.SetBool("Dead_b", true);
         enemyRb.isKinematic = true;
         enemyCollider.enabled = false;
-
-        gameManager.UpdateScore(score);
-        hud.UpdateTextScore();
 
         yield return new WaitForSeconds(timeBeforeDisappear);
 
@@ -119,8 +112,10 @@ public class EnemyController : MonoBehaviour
     {
         life -= weapon.GetComponent<WeaponFeatures>().physicalDamage;
 
-        if (life <= 0)
+        if (IsDead())
         {
+            gameManager.UpdateScore(score);
+            
             StartCoroutine(Death());
         }
     }
@@ -138,32 +133,12 @@ public class EnemyController : MonoBehaviour
     // As long as the enemy is colliding with the player, it will continue attacking the player
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && canAttack && gameManager.IsGameActive && 
+            !collision.gameObject.GetComponent<PlayerController>().IsImmune)
         {
-            if (canAttack && gameManager.IsGameActive && !collision.gameObject.GetComponent<PlayerController>().IsImmune)
-            {
-                canAttack = false;
-                StartCoroutine(Attack());
-            }
-
-            //if (canAttack && gameManager.IsGameActive)
-            //{
-            //    StartCoroutine(Attack());
-            //}
+            StartCoroutine(Attack());
         }
     }
-
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Player"))        //////////// Codigo de prueba //////////////////
-    //    {
-    //        if (gameManager.IsGameActive)
-    //        {
-    //            StopCoroutine(Attack());
-    //            canAttack = true;
-    //        }
-    //    }
-    //}
 
     // If the enemy collides with a weapon and the owner of that weapon is attacking, the enemy will recive a hit
     private void OnTriggerEnter(Collider other)
