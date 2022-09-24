@@ -11,22 +11,24 @@ public class Arena : MonoBehaviour
     private GateController playerGate;
 
     private SpawnManager spawnManager;
+    private MusicManager musicManager;
 
     private void Start()
     {
         spawnManager = FindObjectOfType<SpawnManager>();
+        musicManager = FindObjectOfType<MusicManager>();
         enemyGates = transform.Find("EnemyRooms").GetComponentsInChildren<GateController>();
         playerGate = transform.Find("PlayerRoom").GetComponentInChildren<GateController>();
     }
 
     // Starts the coroutine PrepareForBattleCoroutine()
-    public void PrepareForBattle()
+    public void StartCoroutinePrepareForBattle()
     {
-        StartCoroutine(PrepareForBattleCoroutine());
+        StartCoroutine(PrepareForBattle());
     }
 
     // Raise up all of the enemy gates, lower the player gate and start spawning monsters
-    public IEnumerator PrepareForBattleCoroutine()
+    public IEnumerator PrepareForBattle()
     {
         playerGate.LowerHarrows();
 
@@ -37,6 +39,7 @@ public class Arena : MonoBehaviour
         yield return new WaitForSeconds(timeToStartSpawningEnemies);
 
         spawnManager.StartAllSpawns();
+        musicManager.PrepareBattleEnvironment();
     }
 
     // Raise up all of the enemy gates for monster deploying

@@ -19275,6 +19275,7 @@ GameObject:
   - component: {fileID: 4335282639064450}
   - component: {fileID: 198993423900235080}
   - component: {fileID: 199087449348766326}
+  - component: {fileID: 6364721778362621819}
   m_Layer: 0
   m_Name: RedSoul
   m_TagString: Untagged
@@ -24084,3 +24085,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &6364721778362621819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975959190090480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6739c1cff1410d4a835e3898a84d2ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0

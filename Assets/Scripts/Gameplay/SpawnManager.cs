@@ -11,6 +11,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float powerupSpawnTime;
     [SerializeField] private float launchObjectSpawnTime;
     [SerializeField] private float spawnStartDelay;
+    [SerializeField] private float powerupSpawningHeight;
 
     [SerializeField] private bool spawnEnemies;
     [SerializeField] private bool spawnPowerups;
@@ -60,10 +61,7 @@ public class SpawnManager : MonoBehaviour
     {
         int enemyIndex = Random.Range(0, enemies.Length);
         int enemySpawnPosIndex = Random.Range(0, enemySpawnPositions.Length);
-
         Vector3 position = enemySpawnPositions[enemySpawnPosIndex].position;
-
-        // Vector3 position = GenerateSpawningEnemyPosition(enemies[enemyIndex].gameObject);
 
         Instantiate(enemies[enemyIndex], position, enemies[enemyIndex].transform.rotation);
     }
@@ -87,25 +85,39 @@ public class SpawnManager : MonoBehaviour
             GameObject launchObject = launchObjects[launchObjectIndex];
             Vector3 position = GenerateSpawningLaunchObjectPosition();
 
-            launchObject = Instantiate(launchObject, position, launchObject.transform.rotation);
-            launchObject.GetComponent<LaunchObjectController>().SetLaunchObjectMovement();
+            Instantiate(launchObject, position, launchObject.transform.rotation);
         }
     }
 
     // Spawns the corresponding soul of the enemy in the same position as the enemy
     public void SpawnEnemySoul(GameObject enemy)
     {
-        float difference = 0.2f;
-        Vector3 position = new Vector3(enemy.transform.position.x, enemy.transform.position.y - difference, enemy.transform.position.z);
+        const float differenceYPos = 0.2f;
+        Vector3 position = new Vector3(enemy.transform.position.x, enemy.transform.position.y - differenceYPos, enemy.transform.position.z);
+        GameObject soul = FindSoulByColor(enemy.GetComponent<EnemyController>().SoulColor);
 
-        if (enemy.GetComponent<EnemyController>().SoulColor == SoulColors.Red)
+        if (soul != null)
         {
-            Instantiate(souls[0], position, souls[0].gameObject.transform.rotation);
+            Instantiate(soul, position, soul.transform.rotation);
         }
-        else if (enemy.GetComponent<EnemyController>().SoulColor == SoulColors.Blue)
+        else
         {
-            Instantiate(souls[1], position, souls[1].gameObject.transform.rotation);
+            throw new System.Exception("No se encontro un alma con ese color");
         }
+    }
+
+    // Finds a soul in the soul array that has the same color as the given monster
+    private GameObject FindSoulByColor(SoulColors soulColor)
+    {
+        foreach (GameObject soul in souls)
+        {
+            if (soul.GetComponent<Soul>().Color == soulColor)
+            {
+                return soul;
+            }
+        }
+
+        return null;
     }
 
     // Spawns powerup visual effects
@@ -132,7 +144,7 @@ public class SpawnManager : MonoBehaviour
         float xPosition = Random.Range(environment.LeftLimit.position.x, environment.RightLimit.position.x);
         float zPosition = Random.Range(environment.LowerLimit.position.z, environment.UpperLimit.position.z);
         
-        Vector3 position = new Vector3(xPosition, powerup.transform.localScale.y / 2, zPosition);
+        Vector3 position = new Vector3(xPosition, environment.Ground.position.y + powerupSpawningHeight, zPosition);
 
         return position;
     }

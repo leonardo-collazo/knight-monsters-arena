@@ -9643,6 +9643,7 @@ GameObject:
   - component: {fileID: 4731861580502952}
   - component: {fileID: 198696392922457284}
   - component: {fileID: 199374976460404498}
+  - component: {fileID: 2482130417744057086}
   m_Layer: 0
   m_Name: BlueSoul
   m_TagString: Untagged
@@ -14452,6 +14453,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &2482130417744057086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223526616464650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6739c1cff1410d4a835e3898a84d2ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 1
 --- !u!1 &1430769185673144
 GameObject:
   m_ObjectHideFlags: 0

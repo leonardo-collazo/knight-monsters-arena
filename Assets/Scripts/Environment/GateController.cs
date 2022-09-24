@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class GateController : MonoBehaviour
 {
-    [SerializeField] protected float harrowMovementSpeed;
+    [SerializeField] protected float harrowRisingSpeed;
+    [SerializeField] protected float harrowLoweringSpeed;
 
     [SerializeField] protected GameObject backHarrow;
     [SerializeField] protected GameObject frontHarrow;
 
-    protected float maxError = 0.001f;
+    protected float maxDistance = 0.001f;
 
     #region Lower harrows methods
 
@@ -28,10 +29,10 @@ public class GateController : MonoBehaviour
         Vector3 frontHarrowNewPos = frontHarrow.transform.localPosition;
         frontHarrowNewPos.y += Ymovement;
 
-        while (Vector3.Distance(frontHarrow.transform.localPosition, frontHarrowNewPos) > maxError)
+        while (Vector3.Distance(frontHarrow.transform.localPosition, frontHarrowNewPos) > maxDistance)
         {
             frontHarrow.transform.localPosition = Vector3.MoveTowards(frontHarrow.transform.localPosition, frontHarrowNewPos,
-                harrowMovementSpeed * Time.deltaTime);
+                harrowLoweringSpeed * Time.deltaTime);
 
             yield return new WaitForEndOfFrame();
         }
@@ -43,10 +44,10 @@ public class GateController : MonoBehaviour
         Vector3 backHarrowNewPos = backHarrow.transform.localPosition;
         backHarrowNewPos.y += Ymovement;
 
-        while (Vector3.Distance(backHarrow.transform.localPosition, backHarrowNewPos) > maxError)
+        while (Vector3.Distance(backHarrow.transform.localPosition, backHarrowNewPos) > maxDistance)
         {
             backHarrow.transform.localPosition = Vector3.MoveTowards(backHarrow.transform.localPosition, backHarrowNewPos,
-                harrowMovementSpeed * Time.deltaTime);
+                harrowLoweringSpeed * Time.deltaTime);
 
             yield return new WaitForEndOfFrame();
         }
@@ -71,10 +72,10 @@ public class GateController : MonoBehaviour
         Vector3 frontHarrowNewPos = frontHarrow.transform.localPosition;
         frontHarrowNewPos.y += Ymovement;
 
-        while (Vector3.Distance(frontHarrow.transform.localPosition, frontHarrowNewPos) > maxError)
+        while (Vector3.Distance(frontHarrow.transform.localPosition, frontHarrowNewPos) > maxDistance)
         {
             frontHarrow.transform.localPosition = Vector3.MoveTowards(frontHarrow.transform.localPosition, frontHarrowNewPos,
-                harrowMovementSpeed * Time.deltaTime);
+                harrowRisingSpeed * Time.deltaTime);
 
             yield return new WaitForEndOfFrame();
         }
@@ -86,10 +87,10 @@ public class GateController : MonoBehaviour
         Vector3 backHarrowNewPos = backHarrow.transform.localPosition;
         backHarrowNewPos.y += Ymovement;
 
-        while (Vector3.Distance(backHarrow.transform.localPosition, backHarrowNewPos) > maxError)
+        while (Vector3.Distance(backHarrow.transform.localPosition, backHarrowNewPos) > maxDistance)
         {
             backHarrow.transform.localPosition = Vector3.MoveTowards(backHarrow.transform.localPosition, backHarrowNewPos,
-                harrowMovementSpeed * Time.deltaTime);
+                harrowRisingSpeed * Time.deltaTime);
 
             yield return new WaitForEndOfFrame();
         }

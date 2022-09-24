@@ -20,6 +20,7 @@ public class LaunchObjectController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         rb.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse);
+        SetLaunchObjectMovement();
     }
 
     void FixedUpdate()
@@ -54,7 +55,7 @@ public class LaunchObjectController : MonoBehaviour
     }
 
     // Sets the movement type of the launchobject in dependence of the given position
-    public void SetLaunchObjectMovement()
+    private void SetLaunchObjectMovement()
     {
         if (transform.position.x == environment.LeftLimit.position.x)
         {

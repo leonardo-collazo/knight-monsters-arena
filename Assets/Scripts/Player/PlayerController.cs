@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
     {
         if (gameManager.IsGameActive && !gameManager.IsGamePaused && !IsRecoveringFromDeath())
         {
-            if (Input.GetMouseButtonDown(0) && !IsRunning() && !IsAttacking())
+            if (Input.GetMouseButtonDown(0) && !IsRunning() && !IsAttacking() && !IsGettingHit())
             {
                 Attack();
                 ChangeTypeAttack();

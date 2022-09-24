@@ -65,11 +65,6 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         playerController.Life = playerController.MaxLife;
-
-        hud.ShowHUDPanel();
-        hud.ResetComponentValues();
-        thirdPersonCamera.EnableThirdPersonCamera();
-
         IsGameActive = true;
     }
 

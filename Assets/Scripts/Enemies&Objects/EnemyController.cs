@@ -27,7 +27,6 @@ public class EnemyController : MonoBehaviour
     private GameManager gameManager;
     private SpawnManager spawnManager;
     private Animator enemyAnim;
-    private HUD hud;
 
     public SoulColors SoulColor { get => soulColor; }
     public float PhysicalDamage { get => physicalDamage; }
@@ -39,16 +38,15 @@ public class EnemyController : MonoBehaviour
     {
         enemyRb = GetComponent<Rigidbody>();
         enemyCollider = GetComponent<Collider>();
-        targetToFollow = GameObject.FindGameObjectWithTag("Player").transform;
         gameManager = FindObjectOfType<GameManager>();
         spawnManager = FindObjectOfType<SpawnManager>();
+        targetToFollow = GameObject.FindGameObjectWithTag("Player").transform;
         enemyAnim = GetEnemyAnimator();
-        hud = FindObjectOfType<HUD>();
     }
 
     void FixedUpdate()
     {
-        if (gameManager.IsGameActive && !IsDead() && canMove)
+        if (gameManager.IsGameActive && !IsDead() && canMove && !IsAttacking())
         {
             Move();
         }
@@ -80,10 +78,10 @@ public class EnemyController : MonoBehaviour
         enemyAnim.SetBool("Dead_b", true);
         enemyRb.isKinematic = true;
         enemyCollider.enabled = false;
+        spawnManager.SpawnEnemySoul(gameObject);
 
         yield return new WaitForSeconds(timeBeforeDisappear);
-
-        spawnManager.SpawnEnemySoul(gameObject);
+        
         Destroy(gameObject);
     }
 
