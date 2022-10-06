@@ -108,7 +108,7 @@ public class EnemyController : MonoBehaviour
     // Subtracts life from the enemy
     void GetHitFromPlayerWeapon(GameObject weapon)
     {
-        life -= weapon.GetComponent<WeaponFeatures>().physicalDamage;
+        life -= weapon.GetComponent<Weapon>().PhysicalDamage;
 
         if (IsDead())
         {

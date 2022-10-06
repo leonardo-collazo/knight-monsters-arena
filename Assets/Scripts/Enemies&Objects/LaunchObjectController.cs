@@ -4,15 +4,16 @@ public enum LaunchObjectMovementType { None, Up, Right, Down, Left }
 
 public class LaunchObjectController : MonoBehaviour
 {
-    private float movementSpeed = 15;
-    private float maxTorque = 10.0f;
-    
-    public int physicalDamage;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float maxTorque;
+    [SerializeField] private int physicalDamage;
+
+    private LaunchObjectMovementType movementType;
 
     private Environment environment;
     private Rigidbody rb;
 
-    public LaunchObjectMovementType movementType;
+    public int PhysicalDamage { get => physicalDamage; }
 
     void Awake()
     {

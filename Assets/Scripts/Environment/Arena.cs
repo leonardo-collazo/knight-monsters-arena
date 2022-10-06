@@ -5,6 +5,7 @@ using UnityEngine;
 public class Arena : MonoBehaviour
 {
     [SerializeField] private float timeToRaiseEnemyGates;
+    [SerializeField] private float timeToStartRaisingEnemyGates;
     [SerializeField] private float timeToStartSpawningEnemies;
 
     private GateController[] enemyGates;
@@ -21,33 +22,41 @@ public class Arena : MonoBehaviour
         playerGate = transform.Find("PlayerRoom").GetComponentInChildren<GateController>();
     }
 
-    // Starts the coroutine PrepareForBattleCoroutine()
-    public void StartCoroutinePrepareForBattle()
+    // Starts the first phase of battle preparation
+    public void PrepareForBattle()
     {
-        StartCoroutine(PrepareForBattle());
+        StartCoroutine(FirstPhase());
     }
 
-    // Raise up all of the enemy gates, lower the player gate and start spawning monsters
-    public IEnumerator PrepareForBattle()
+    // Lower the player gate
+    private IEnumerator FirstPhase()
     {
         playerGate.LowerHarrows();
 
-        yield return new WaitForSeconds(timeToRaiseEnemyGates);
+        yield return new WaitForSeconds(timeToStartRaisingEnemyGates);
 
-        RaiseAllEnemyGates();
-
-        yield return new WaitForSeconds(timeToStartSpawningEnemies);
-
-        spawnManager.StartAllSpawns();
-        musicManager.PrepareBattleEnvironment();
+        StartCoroutine(SecondPhase());
     }
 
     // Raise up all of the enemy gates for monster deploying
-    private void RaiseAllEnemyGates()
+    private IEnumerator SecondPhase()
     {
         foreach (GateController enemyGate in enemyGates)
         {
             enemyGate.RaiseHarrows();
+
+            yield return new WaitForSeconds(timeToRaiseEnemyGates);
         }
+
+        yield return new WaitForSeconds(timeToStartSpawningEnemies);
+
+        ThirdPhase();
+    }
+
+    // Starts spawning all and prepares battle music
+    private void ThirdPhase()
+    {
+        spawnManager.StartAllSpawns();
+        musicManager.PrepareBattleEnvironment();
     }
 }

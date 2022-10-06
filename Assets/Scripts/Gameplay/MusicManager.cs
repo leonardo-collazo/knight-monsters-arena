@@ -11,55 +11,82 @@ public class MusicManager : MonoBehaviour
 
     private AudioSource music;
 
-    private void Start()
+    public void Start()
     {
         music = GetComponent<AudioSource>();
     }
-
-    private void PlayMusic()
+    
+    // Plays the music
+    public void PlayMusic()
     {
         music.Play();
     }
 
-    private void StopMusic()
+    // Stops the music
+    public void StopMusic()
     {
         music.Stop();
     }
-
-    private void SetMaxVolume()
+    
+    // Set the volume to the maximum
+    public void SetMaxVolume()
     {
         music.volume = 1;
     }
 
-    private IEnumerator TurnVolumeDownSlowly(float volume)
-    {
-        while (music.volume > volume)
-        {
-            music.volume -= turningVolumeDownSpeed * Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    private void LoadCombatMusic()
+    // Loads combat music
+    public void LoadCombatMusic()
     {
         music.clip = combatMusic;
     }
 
-    private IEnumerator TurnVolumeDownAndStop(float volume)
+    // Lowers the volume slowly over a set period of time
+    private IEnumerator AdjustVolume(float volume)
     {
-        StartCoroutine(TurnVolumeDownSlowly(volume));
-        
-        while (music.volume > volume)
+        if (music.volume > volume)
         {
-            yield return new WaitForEndOfFrame();
+            while (music.volume > volume)
+            {
+                music.volume -= turningVolumeDownSpeed * Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        else if (music.volume < volume)
+        {
+            while (music.volume < volume)
+            {
+                music.volume += turningVolumeDownSpeed * Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+    }
+
+    // Adjust the volume to certain value and stops
+    private IEnumerator AdjustVolumeAndStopMusicCoroutine(float volume)
+    {
+        StartCoroutine(AdjustVolume(volume));
+
+        if (music.volume > volume)
+        {
+            while (music.volume > volume)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        else if (music.volume > volume)
+        {
+            while (music.volume > volume)
+            {
+                yield return new WaitForEndOfFrame();
+            }
         }
 
         StopMusic();
     }
 
-    public void StartCoroutineTurnVolumeDownAndStop(float volume)
+    public void AdjustVolumeAndStop(float volume)
     {
-        StartCoroutine(TurnVolumeDownAndStop(volume));
+        StartCoroutine(AdjustVolumeAndStopMusicCoroutine(volume));
     }
 
     public void PrepareBattleEnvironment()

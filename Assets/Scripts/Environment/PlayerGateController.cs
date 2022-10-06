@@ -11,11 +11,6 @@ public class PlayerGateController : GateController
         dust = transform.Find("Dust").GetComponent<ParticleSystem>();
     }
 
-    void SpreadDust()
-    {
-        dust.Play();
-    }
-
     // Lower front harrow
     public override IEnumerator LowerFrontHarrow(float Ymovement)
     {
@@ -32,8 +27,10 @@ public class PlayerGateController : GateController
 
         if (!dust.isEmitting)
         {
-            SpreadDust();
+            dust.Play();
         }
+
+        StopHarrowSound();
     }
 
     // Lower back harrow
@@ -52,7 +49,9 @@ public class PlayerGateController : GateController
 
         if (!dust.isEmitting)
         {
-            SpreadDust();
+            dust.Play();
         }
+
+        StopHarrowSound();
     }
 }

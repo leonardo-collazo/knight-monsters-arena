@@ -17,7 +17,7 @@ public class StartSpawningSensor : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            arena.StartCoroutinePrepareForBattle();
+            arena.PrepareForBattle();
         }
 
         Destroy(gameObject);

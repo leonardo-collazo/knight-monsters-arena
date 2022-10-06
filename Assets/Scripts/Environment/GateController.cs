@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class GateController : MonoBehaviour
 {
     [SerializeField] protected float harrowRisingSpeed;
@@ -10,7 +11,14 @@ public class GateController : MonoBehaviour
     [SerializeField] protected GameObject backHarrow;
     [SerializeField] protected GameObject frontHarrow;
 
+    protected AudioSource audioSource;
+
     protected float maxDistance = 0.001f;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     #region Lower harrows methods
 
@@ -18,6 +26,8 @@ public class GateController : MonoBehaviour
     public void LowerHarrows()
     {
         const float Ymovement = -0.3850229f;
+
+        PlayHarrowSound();
 
         StartCoroutine(LowerFrontHarrow(Ymovement));
         StartCoroutine(LowerBackHarrow(Ymovement));
@@ -36,6 +46,8 @@ public class GateController : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+
+        StopHarrowSound();
     }
 
     // Lower back harrow
@@ -51,6 +63,8 @@ public class GateController : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+
+        StopHarrowSound();
     }
 
     #endregion
@@ -61,6 +75,8 @@ public class GateController : MonoBehaviour
     public void RaiseHarrows()
     {
         const float Ymovement = 0.3850229f;
+
+        PlayHarrowSound();
 
         StartCoroutine(RaiseFrontHarrow(Ymovement));
         StartCoroutine(RaiseBackHarrow(Ymovement));
@@ -79,6 +95,8 @@ public class GateController : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+
+        StopHarrowSound();
     }
 
     // Raise back harrow
@@ -94,7 +112,19 @@ public class GateController : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+
+        StopHarrowSound();
     }
 
     #endregion
+
+    public void PlayHarrowSound()
+    {
+        audioSource.Play();
+    }
+
+    public void StopHarrowSound()
+    {
+        audioSource.Stop();
+    }
 }

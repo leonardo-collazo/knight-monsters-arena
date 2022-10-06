@@ -14,15 +14,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private float combatCooldownTime;
     [SerializeField] private float receiveDamageCooldownTime;
+    [SerializeField] private float raisePlayerGateWaitingTime;
 
     [SerializeField] private ThirdPersonCameraController thirdPersonCamera;
     [SerializeField] private GameObject pausePanelGroup;
     [SerializeField] private GameOverMenu gameOverMenu;
+    [SerializeField] private StartPanel startPanel;
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private HUD hud;
 
+    private PlayerGateController playerGateController;
     private PlayerController playerController;
     private SpawnManager spawnManager;
+    private MusicManager musicManager;
 
     public float CombatCooldownTime { get => combatCooldownTime; }
     public float ReceiveDamageCooldownTime { get => receiveDamageCooldownTime; }
@@ -42,6 +46,8 @@ public class GameManager : MonoBehaviour
     {
         playerController = FindObjectOfType<PlayerController>();
         spawnManager = FindObjectOfType<SpawnManager>();
+        musicManager = FindObjectOfType<MusicManager>();
+        playerGateController = FindObjectOfType<PlayerGateController>();
     }
 
     void Update()
@@ -64,7 +70,23 @@ public class GameManager : MonoBehaviour
     // Starts the game
     public void StartGame()
     {
+        StartCoroutine(StartGameCoroutine());
+    }
+
+    private IEnumerator StartGameCoroutine()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
         playerController.Life = playerController.MaxLife;
+
+        startPanel.HideStartPanel();
+        musicManager.AdjustVolumeAndStop(0);
+
+        yield return new WaitForSeconds(raisePlayerGateWaitingTime);
+
+        playerGateController.RaiseHarrows();
+        thirdPersonCamera.EnableThirdPersonCamera();
+        hud.ShowHUDPanel();
+        hud.ResetComponentValues();
         IsGameActive = true;
     }
 
@@ -74,15 +96,18 @@ public class GameManager : MonoBehaviour
         gameOverMenu.HideGameOverMenu();
         playerController.RecoverFromDeath();
         ImmunizePlayer(playerController.TimeRecoveringFromDeath);
-        
-        StartGame();
+        Cursor.lockState = CursorLockMode.Confined;
+
+        playerController.Life = playerController.MaxLife;
         spawnManager.StartAllSpawns();
+        IsGameActive = true;
     }
 
     // Pauses the game
     public void PauseGame()
     {
         Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.Confined;
 
         hud.HideHUDPanel();
         pausePanel.ShowPausePanel();
@@ -94,6 +119,7 @@ public class GameManager : MonoBehaviour
     public void ReanudeGame()
     {
         Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
 
         DisablePausePanelGroup();
         hud.ShowHUDPanel();
@@ -110,6 +136,8 @@ public class GameManager : MonoBehaviour
         spawnManager.CancelInvoke();
         hud.HideHUDPanel();
         gameOverMenu.ShowGameOverMenu();
+
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     // Exites the game

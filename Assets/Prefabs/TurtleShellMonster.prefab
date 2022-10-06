@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   life: 10
-  speed: 150
+  speed: 130
   score: 15
   timeBeforeDisappear: 2
   timeBeforeAttacking: 0.5

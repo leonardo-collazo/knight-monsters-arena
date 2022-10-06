@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxLife;
 
     [SerializeField] private float movementSpeed;
-    [SerializeField] private float walkingAnimSpeedValue;
-    [SerializeField] private float runningAnimSpeedValue;
+    [SerializeField] private float walkingAnimSpeed;
+    [SerializeField] private float runningAnimSpeed;
 
     [SerializeField] private float turnSmoothTime;
     [SerializeField] private float timeRecoveringFromDeath;
@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRb;
     private Animator playerAnim;
     private GameManager gameManager;
+    private SwordSwingSFX swordSwingSFX;
 
     [SerializeField] private HUD hud;
     [SerializeField] private Transform cam;
@@ -51,12 +52,12 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                playerAnim.SetFloat("Speed_f", runningAnimSpeedValue);
+                playerAnim.SetFloat("Speed_f", runningAnimSpeed);
                 return movementSpeed * 2;
             }
             else
             {
-                playerAnim.SetFloat("Speed_f", walkingAnimSpeedValue);
+                playerAnim.SetFloat("Speed_f", walkingAnimSpeed);
                 return movementSpeed;
             }
         }
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         playerAnim = GetPlayerAnimator();
         gameManager = FindObjectOfType<GameManager>();
+        swordSwingSFX = GetComponentInChildren<SwordSwingSFX>();
     }
 
     void Update()
@@ -85,6 +87,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetMouseButtonDown(0) && !IsRunning() && !IsAttacking() && !IsGettingHit())
             {
                 Attack();
+                swordSwingSFX.PlaySoundSwing();
                 ChangeTypeAttack();
             }
 
@@ -149,11 +152,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            playerAnim.SetFloat("Speed_f", runningAnimSpeedValue);
+            playerAnim.SetFloat("Speed_f", runningAnimSpeed);
         }
         else
         {
-            playerAnim.SetFloat("Speed_f", walkingAnimSpeedValue);
+            playerAnim.SetFloat("Speed_f", walkingAnimSpeed);
         }
     }
 
@@ -249,10 +252,10 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsDefending && !IsRecoveringFromDeath() && gameManager.IsGameActive)
         {
-            life -= launchObject.GetComponent<LaunchObjectController>().physicalDamage;
+            life -= launchObject.GetComponent<LaunchObjectController>().PhysicalDamage;
             hud.UpdatePlayerHealthBarValue(GetLifeInPercent());
 
-            if (life > 0)
+            if (life > 0 && !IsGettingHit())
             {
                 playerAnim.SetTrigger("GetHit_trig");
             }
