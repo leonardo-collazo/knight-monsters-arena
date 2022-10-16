@@ -5,6 +5,8 @@ using UnityEngine;
 public class MusicManager : MonoBehaviour
 {
     [SerializeField] private float turningVolumeDownSpeed;
+    [SerializeField] private float gameOverMusicVolume;
+    [SerializeField] private float startMusicVolume;
 
     [SerializeField] private AudioClip initialMusic;
     [SerializeField] private AudioClip combatMusic;
@@ -29,7 +31,7 @@ public class MusicManager : MonoBehaviour
     }
     
     // Set the volume to the maximum
-    public void SetMaxVolume()
+    public void MaxVolume()
     {
         music.volume = 1;
     }
@@ -92,7 +94,17 @@ public class MusicManager : MonoBehaviour
     public void PrepareBattleEnvironment()
     {
         LoadCombatMusic();
-        SetMaxVolume();
+        MaxVolume();
         PlayMusic();
+    }
+
+    public void AdjustGameOverMusicVolume()
+    {
+        StartCoroutine(AdjustVolume(gameOverMusicVolume));
+    }
+
+    public void AdjustStartMusicVolume()
+    {
+        StartCoroutine(AdjustVolume(startMusicVolume));
     }
 }

@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Powerup : MonoBehaviour
+public class Powerup : MonoBehaviour, IHasNoise
 {
     [SerializeField] private int lifeRecover;
+    [SerializeField] private AudioClip healthSound;
 
     private HUD hud;
     private SpawnManager spawnManager;
+    private SoundManager soundManager;
 
     private void Start()
     {
         hud = FindObjectOfType<HUD>();
         spawnManager = FindObjectOfType<SpawnManager>();
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -23,6 +26,7 @@ public class Powerup : MonoBehaviour
 
             if (playerController != null)
             {
+                MakeNoise();
                 HealPlayer(playerController);
             }
 
@@ -36,5 +40,18 @@ public class Powerup : MonoBehaviour
     {
         playerController.Life += lifeRecover;
         hud.UpdatePlayerHealthBarValue(playerController.GetLifeInPercent());
+    }
+
+    // Plays health noise
+    public void MakeNoise()
+    {
+        soundManager.SoundPlayer.clip = healthSound;
+        soundManager.MakeNoise();
+    }
+
+    // Stops health noise
+    public void StopNoise()
+    {
+        soundManager.StopNoise();
     }
 }

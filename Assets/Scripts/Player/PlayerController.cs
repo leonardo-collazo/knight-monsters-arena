@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum PlayerAttackType { Vertical, Diagonal }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IHasNoise
 {
     #region Variables
 
@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float turnSmoothTime;
     [SerializeField] private float timeRecoveringFromDeath;
+    [SerializeField] private float normalArmorNoisePitch;
+    [SerializeField] private float highArmorNoisePitch;
 
     private float turnSmoothVelocity;
 
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private Animator playerAnim;
     private GameManager gameManager;
     private SwordSwingSFX swordSwingSFX;
+    private AudioSource armorNoise;
 
     [SerializeField] private HUD hud;
     [SerializeField] private Transform cam;
@@ -63,6 +66,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public float ArmorNoisePitch
+    {
+        get
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                return highArmorNoisePitch;
+            }
+            else
+            {
+                return normalArmorNoisePitch;
+            }
+        }
+    }
+
     #endregion
 
     #region Unity methods
@@ -78,6 +96,9 @@ public class PlayerController : MonoBehaviour
         playerAnim = GetPlayerAnimator();
         gameManager = FindObjectOfType<GameManager>();
         swordSwingSFX = GetComponentInChildren<SwordSwingSFX>();
+        armorNoise = GetComponent<AudioSource>();
+
+        armorNoise.pitch = normalArmorNoisePitch;
     }
 
     void Update()
@@ -113,17 +134,20 @@ public class PlayerController : MonoBehaviour
             {
                 SetPlayerMovementAnimation();
                 Move(horizontalInput, verticalInput);
+                MakeNoise();
             }
             else
             {
                 StopMovingRigibdoy();
                 StopMovingAnimation();
+                StopNoise();
             }
         }
         else
         {
             StopMovingRigibdoy();
             StopMovingAnimation();
+            StopNoise();
         }
     }
 
@@ -345,4 +369,19 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    public void MakeNoise()
+    {
+        armorNoise.pitch = ArmorNoisePitch;
+
+        if (!armorNoise.isPlaying)
+        {
+            armorNoise.Play();
+        }
+    }
+
+    public void StopNoise()
+    {
+        armorNoise.Stop();
+    }
 }

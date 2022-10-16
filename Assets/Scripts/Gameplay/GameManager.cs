@@ -87,6 +87,8 @@ public class GameManager : MonoBehaviour
         thirdPersonCamera.EnableThirdPersonCamera();
         hud.ShowHUDPanel();
         hud.ResetComponentValues();
+        musicManager.AdjustStartMusicVolume();
+
         IsGameActive = true;
     }
 
@@ -96,10 +98,13 @@ public class GameManager : MonoBehaviour
         gameOverMenu.HideGameOverMenu();
         playerController.RecoverFromDeath();
         ImmunizePlayer(playerController.TimeRecoveringFromDeath);
+        
         Cursor.lockState = CursorLockMode.Confined;
-
         playerController.Life = playerController.MaxLife;
+        
         spawnManager.StartAllSpawns();
+        musicManager.AdjustStartMusicVolume();
+
         IsGameActive = true;
     }
 
@@ -131,11 +136,12 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         IsGameActive = false;
-        thirdPersonCamera.DisableThirdPersonCamera();
 
+        thirdPersonCamera.DisableThirdPersonCamera();
         spawnManager.CancelInvoke();
         hud.HideHUDPanel();
         gameOverMenu.ShowGameOverMenu();
+        musicManager.AdjustGameOverMusicVolume();
 
         Cursor.lockState = CursorLockMode.Confined;
     }
